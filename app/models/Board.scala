@@ -19,7 +19,11 @@ class Board(val pieces: ListSet[OnBoardPiece]) {
     }
   }
 
-  def toCoordinate(piece: Piece): List[Coordinate] ={
-
+  def findMoveCoordinates(atPoint: Coordinate, movement: Movement): List[Coordinate] = {
+    movement.productIterator.map(_.asInstanceOf[Coordinate]).map { c =>
+      val x = atPoint.x - c.x
+      val y = atPoint.y - c.y
+      Coordinate(x, y)
+    }.toList
   }
 }
