@@ -1,4 +1,4 @@
-import com.gargoylesoftware.htmlunit.javascript.host.geo.Coordinates
+import models._
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 
@@ -13,28 +13,28 @@ class BoardSpec extends FlatSpec with Matchers {
     val y = 9
     val coodinate = Coordinate(x, y)
     val ou: Option[Piece] = board.findPiece(coodinate)
-    ou.map(_.isInstanceOf[Ou] should equal(true))
+    ou.get should equal(Ou)
   }
 
-  it should "toCoordinate" in {
-    val hu: Piece = Hu
-    val huMoveRange: List[Coordinate] = board.toCoordicate(hu)
-    huMoveRange.foreach {
-      _.x should equal(0)
-      _.y should equal(1)
-    }
-  }
+  //  it should "toCoordinate" in {
+  //    val hu: Piece = Hu
+  //    val huMoveRange: List[Coordinate] = board.toCoordicate(hu)
+  //    huMoveRange.foreach {
+  //      _.x should equal(0)
+  //      _.y should equal(1)
+  //    }
+  //  }
 
   //指定ポイントから動くことのできる座標のリストを返す関数
   it should "findMoveCoordinates" in {
     val x = 4
     val y = 7
     val atPoint: Coordinate = Coordinate(x, y)
-    val huMoveRange: List[Coordinate] = List(Coordinate(0, 1))
-    val canMoveCoordinates: List[Coordinate] = board.findMoveCoodinates(atPoint, huMoveRange)
-    canMoveCoordinates.foreach {
-      _.x should equal(4)
-      _.y should equal(7)
+    val huMoveRange = Hu.movement
+    val canMoveCoordinates: List[Coordinate] = board.findMoveCoordinates(atPoint, huMoveRange)
+    canMoveCoordinates.foreach { c =>
+      c.x should equal(4)
+      c.y should equal(7)
     }
   }
 

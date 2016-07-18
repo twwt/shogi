@@ -10,7 +10,7 @@ case class Coordinate(x: Int, y: Int)
 
 case class OnBoardPiece(player: Player, piece: Piece, coordinate: Coordinate)
 
-class Board(val pieces: ListSet[OnBoardPiece]) {
+class Board(val pieces: Set[OnBoardPiece]) {
 
   def findPiece(coordinate: Coordinate): Option[Piece] = {
     pieces.filter(_.coordinate == coordinate) match {
@@ -25,5 +25,18 @@ class Board(val pieces: ListSet[OnBoardPiece]) {
       val y = atPoint.y - c.y
       Coordinate(x, y)
     }.toList
+  }
+
+  def nihuCheck(atPoint: Coordinate) = {
+    val verticalLine: Set[Coordinate] = Range(1, 8).map {
+      Coordinate(_, atPoint.y)
+    }.toSet
+    val huCoordinate = pieces.filter {
+      _.piece match {
+        case Hu => true
+        case _ => false
+      }
+    }.map(_.coordinate)
+    verticalLine.map(huCoordinate.contains(_)).isEmpty
   }
 }
