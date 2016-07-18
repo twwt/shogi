@@ -20,7 +20,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
   }
 
   def findMoveCoordinates(atPoint: Coordinate, movement: Movement): List[Coordinate] = {
-    movement.productIterator.map(_.asInstanceOf[Coordinate]).map { c =>
+    movement.productIterator.map(_.asInstanceOf[Coordinate]).filterNot(_ == Coordinate(0,0)).map { c =>
       val x = atPoint.x - c.x
       val y = atPoint.y - c.y
       Coordinate(x, y)
@@ -38,5 +38,9 @@ class Board(val pieces: Set[OnBoardPiece]) {
       }
     }.map(_.coordinate)
     verticalLine.map(huCoordinate.contains(_)).isEmpty
+  }
+
+  def searchOpponentPieceOrFreeSpace(coordinate: Coordinate): Option[OnBoardPiece] = {
+    pieces.filter(_.coordinate == coordinate).headOption
   }
 }
