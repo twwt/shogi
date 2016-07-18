@@ -18,4 +18,8 @@ class Board(val pieces: ListSet[OnBoardPiece]) {
       case c if c.size == 1 => Some(c.head.piece)
     }
   }
+
+  def toCoordinate(piece: Piece): List[Coordinate] ={
+
+  }
 }
