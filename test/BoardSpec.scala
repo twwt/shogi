@@ -8,7 +8,7 @@ class BoardSpec extends FlatSpec with Matchers {
   val ou = Ou
   val player1 = Black
   val player2 = White
-  val onBoardPiece = Set(OnBoardPiece(player1,Ou,Coordinate(5,9)),OnBoardPiece(player2,Ou,Coordinate(5,1)))
+  val onBoardPiece = Set(OnBoardPiece(player1,Ou,Coordinate(5,9)),OnBoardPiece(player2,Ou,Coordinate(5,1)),OnBoardPiece(player2,Hu,Coordinate(5,3)))
   val board = new Board(onBoardPiece)
 
   behavior of "Board"
@@ -50,6 +50,13 @@ class BoardSpec extends FlatSpec with Matchers {
     succeesCase1.isDefined should equal(true)
     succeesCase2.isDefined should equal(true)
     failCase.isDefined should equal(false)
+  }
+
+  it should "isNihu" in {
+    board.isNihu(Coordinate(5,3),player2) should equal(true)
+    board.isNihu(Coordinate(5,4),player2) should equal(true)
+    board.isNihu(Coordinate(6,4),player2) should equal(true)
+    board.isNihu(Coordinate(4,8),player1) should equal(false)
   }
 
 //  //todo これテストになっているのか？

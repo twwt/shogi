@@ -20,24 +20,24 @@ class Board(val pieces: Set[OnBoardPiece]) {
   }
 
   def findMoveCoordinates(atPoint: Coordinate, movement: Movement): List[Coordinate] = {
-    movement.productIterator.map(_.asInstanceOf[Coordinate]).filterNot(_ == Coordinate(0,0)).map { c =>
+    movement.productIterator.map(_.asInstanceOf[Coordinate]).filterNot(_ == Coordinate(0, 0)).map { c =>
       val x = atPoint.x - c.x
       val y = atPoint.y - c.y
       Coordinate(x, y)
     }.toList
   }
 
-  def nihuCheck(atPoint: Coordinate) = {
-    val verticalLine: Set[Coordinate] = Range(1, 8).map {
-      Coordinate(_, atPoint.y)
+  def isNihu(atPoint: Coordinate, player: Player) = {
+    val verticalLine: Set[Coordinate] = (1 to 9).map {
+      Coordinate(atPoint.x, _)
     }.toSet
-    val huCoordinate = pieces.filter {
+    val onBoardHuCoordinate:Set[Coordinate] = pieces.filter(_.player == player).filter {
       _.piece match {
         case Hu => true
         case _ => false
       }
     }.map(_.coordinate)
-    verticalLine.map(huCoordinate.contains(_)).isEmpty
+    (verticalLine.map(_.y) intersect onBoardHuCoordinate.map(_.y)).size != 0
   }
 
   def searchOpponentPieceOrFreeSpace(coordinate: Coordinate): Option[OnBoardPiece] = {
