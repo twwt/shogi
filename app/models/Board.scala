@@ -8,6 +8,6 @@ case class Coordinate(x: Int, y: Int)
 
 case class OnBoardPiece(player: Player, piece: Piece, coordinate: Coordinate)
 
-class Board(pieces: List[OnBoardPiece]) {
-
+class Board(val pieces: List[OnBoardPiece]) {
+  
 }
