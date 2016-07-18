@@ -1,7 +1,5 @@
 package models
 
-import scala.collection.immutable.ListSet
-
 /**
   * Created by taishi on 7/19/16.
   */
@@ -31,7 +29,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
     val verticalLine: Set[Coordinate] = (1 to 9).map {
       Coordinate(atPoint.x, _)
     }.toSet
-    val onBoardHuCoordinate:Set[Coordinate] = pieces.filter(_.player == player).filter {
+    val onBoardHuCoordinate: Set[Coordinate] = pieces.filter(_.player == player).filter {
       _.piece match {
         case Hu => true
         case _ => false
@@ -40,7 +38,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
     (verticalLine.map(_.y) intersect onBoardHuCoordinate.map(_.y)).size != 0
   }
 
-  def searchOpponentPieceOrFreeSpace(coordinate: Coordinate): Option[OnBoardPiece] = {
-    pieces.filter(_.coordinate == coordinate).headOption
+  def searchOpponentPieceOrFreeSpace(player: Player, coordinate: Coordinate): Boolean = {
+    pieces.filterNot(_.player == player).filter(_.coordinate == coordinate).headOption.isDefined
   }
 }

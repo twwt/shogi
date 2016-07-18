@@ -44,12 +44,14 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   it should "searchOpponentPieceOrFreeSpace" in {
-    val succeesCase1 = board.searchOpponentPieceOrFreeSpace(Coordinate(5,9))
-    val succeesCase2 = board.searchOpponentPieceOrFreeSpace(Coordinate(5,1))
-    val failCase = board.searchOpponentPieceOrFreeSpace(Coordinate(2,9))
-    succeesCase1.isDefined should equal(true)
-    succeesCase2.isDefined should equal(true)
-    failCase.isDefined should equal(false)
+    val succeesCase1 = board.searchOpponentPieceOrFreeSpace(player2,Coordinate(5,9))
+    val succeesCase2 = board.searchOpponentPieceOrFreeSpace(player1,Coordinate(5,1))
+    val failCase1 = board.searchOpponentPieceOrFreeSpace(player2,Coordinate(5,1))
+    val failCase2 = board.searchOpponentPieceOrFreeSpace(player1,Coordinate(2,9))
+    succeesCase1 should equal(true)
+    succeesCase2 should equal(true)
+    failCase1 should equal(false)
+    failCase2 should equal(false)
   }
 
   it should "isNihu" in {
