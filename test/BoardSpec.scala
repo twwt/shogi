@@ -8,7 +8,7 @@ class BoardSpec extends FlatSpec with Matchers {
   val ou = Ou
   val player1 = Black
   val player2 = White
-  val onBoardPiece = Set(OnBoardPiece(player1,Ou,Coordinate(5,9)),OnBoardPiece(player2,Ou,Coordinate(5,1)),OnBoardPiece(player2,Hu,Coordinate(5,3)))
+  val onBoardPiece = Set(OnBoardPiece(player1, Ou, Coordinate(5, 9)), OnBoardPiece(player2, Ou, Coordinate(5, 1)), OnBoardPiece(player2, Hu, Coordinate(5, 3)))
   val board = new Board(onBoardPiece)
 
   behavior of "Board"
@@ -20,34 +20,30 @@ class BoardSpec extends FlatSpec with Matchers {
     val ou: Option[Piece] = board.findPiece(coodinate)
     ou.get should equal(Ou)
   }
-
-  //  it should "toCoordinate" in {
-  //    val hu: Piece = Hu
-  //    val huMoveRange: List[Coordinate] = board.toCoordicate(hu)
-  //    huMoveRange.foreach {
-  //      _.x should equal(0)
-  //      _.y should equal(1)
-  //    }
-  //  }
-
+  
   //指定ポイントから動くことのできる座標のリストを返す関数
   it should "findMoveCoordinates" in {
     val x = 4
     val y = 7
     val atPoint: Coordinate = Coordinate(x, y)
-    val huMoveRange = Hu.movement
-    val canMoveCoordinates: List[Coordinate] = board.findMoveCoordinates(atPoint, huMoveRange)
-    canMoveCoordinates.foreach { c =>
-      c.x should equal(4)
-      c.y should equal(6)
-    }
+    val hu = Hu
+    val kaku = Kaku
+    val ou = Ou
+//    val canMoveCoordinatesHu: List[Coordinate] = board.findMoveCoordinates(atPoint, hu, player2)
+    val canMoveCoordinatesOu: List[Coordinate] = board.findMoveCoordinates(atPoint, ou, player2)
+//    val canMoveCoordinatesKaku: List[Coordinate] = board.findMoveCoordinates(Coordinate(5, 5), kaku, player2)
+//    canMoveCoordinatesHu.foreach { c =>
+//      c.x should equal(4)
+//      c.y should equal(6)
+//    }
+//    canMoveCoordinatesKaku
   }
 
   it should "searchOpponentPieceOrFreeSpace" in {
-    val succeesCase1 = board.searchOpponentPieceOrFreeSpace(player2,Coordinate(5,9))
-    val succeesCase2 = board.searchOpponentPieceOrFreeSpace(player1,Coordinate(5,1))
-    val failCase1 = board.searchOpponentPieceOrFreeSpace(player2,Coordinate(5,1))
-    val failCase2 = board.searchOpponentPieceOrFreeSpace(player1,Coordinate(2,9))
+    val succeesCase1 = board.searchOpponentPieceOrFreeSpace(player2, Coordinate(5, 9))
+    val succeesCase2 = board.searchOpponentPieceOrFreeSpace(player1, Coordinate(5, 1))
+    val failCase1 = board.searchOpponentPieceOrFreeSpace(player2, Coordinate(5, 1))
+    val failCase2 = board.searchOpponentPieceOrFreeSpace(player1, Coordinate(2, 9))
     succeesCase1 should equal(true)
     succeesCase2 should equal(true)
     failCase1 should equal(false)
@@ -55,28 +51,30 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   it should "isNihu" in {
-    board.isNihu(Coordinate(5,3),player2) should equal(true)
-    board.isNihu(Coordinate(5,4),player2) should equal(true)
-    board.isNihu(Coordinate(6,4),player2) should equal(true)
-    board.isNihu(Coordinate(4,8),player1) should equal(false)
+    board.isNihu(Coordinate(5, 3), player2) should equal(true)
+    board.isNihu(Coordinate(5, 4), player2) should equal(true)
+    board.isNihu(Coordinate(6, 4), player2) should equal(true)
+    board.isNihu(Coordinate(4, 8), player1) should equal(false)
   }
 
-//  //todo これテストになっているのか？
-//  //様々なテストケースを用意しなければ行けない、これは結合テスト時にやるテストかもしれない
-//  it should "VerticalAndHorizontalInShortestMovePoints" in {
-//    //飛車,現在地は8,8
-//    val canMovePoints: List[Coordinate] = List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8))
-//    val verticalAndHorizontalCanMovePoints = verticalAndHorizontalInShortestMovePoints(canMovePoints)
-//    verticalAndHorizontalCanMovePoints should equal(List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8)))
-//  }
-//
-//  //todo これテストになっているのか？
-//  it should " diagonalInShortestMovePoints" in {
-//    //飛車,現在地は8,8
-//    val canMovePoints: List[Coordinate] = List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8))
-//    val diagonalCanMovePoints = diagonalInShortestMovePoints(canMovePoints)
-//    diagonalCanMovePoints should equal(List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8)))
-//  }
+  //  //todo これテストになっているのか？
+  //  //様々なテストケースを用意しなければ行けない、これは結合テスト時にやるテストかもしれない
+  //  it should "VerticalAndHorizontalInShortestMovePoints" in {
+  //    board.findMoveCoordinates()
+  //
+  //    //飛車,現在地は8,8
+  //    val canMovePoints: List[Coordinate] = List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8))
+  //    val verticalAndHorizontalCanMovePoints = verticalAndHorizontalInShortestMovePoints(canMovePoints)
+  //    verticalAndHorizontalCanMovePoints should equal(List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8)))
+  //  }
+  //
+  //  //todo これテストになっているのか？
+  //  it should " diagonalInShortestMovePoints" in {
+  //    //飛車,現在地は8,8
+  //    val canMovePoints: List[Coordinate] = List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8))
+  //    val diagonalCanMovePoints = diagonalInShortestMovePoints(canMovePoints)
+  //    diagonalCanMovePoints should equal(List(Coordinate(9, 8), Coordinate(7, 8), Coordinate(6, 8), Coordinate(5, 8), Coordinate(4, 8), Coordinate(3, 8)))
+  //  }
 
 
 }
