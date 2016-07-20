@@ -13,14 +13,19 @@ class PlayerSpec extends FlatSpec with Matchers {
 
   val game = new Game(whitePlayer, board, pieceInHand)
   it should "movePiece" in {
-    val board: Option[Board] = whitePlayer.movePiece(board, Coordinate(5, 5))
+    val newBoard: Option[Board] = whitePlayer.movePiece(board, Coordinate(5, 9), Coordinate(4, 8))
+    newBoard.isDefined should equal(true)
+    newBoard.map(_.findPiece(Coordinate(4, 8)).get).map(_ should equal(Ou))
+
   }
 
-//  it should "takePiece" in {
-//    val board: Option[Board] = game.parent.changePlayerPiece(piece)
-//  }
-//
+  //  it should "takePiece" in {
+  //    val board: Option[Board] = game.parent.changePlayerPiece(piece)
+  //  }
+  //
   it should "addPiece" in {
-    val newBoard: Board = game.parent.addPiece(game.board)
+    val newBoard: Option[Board] = whitePlayer.addPiece(board, Hu, Coordinate(1, 4))
+    newBoard.isDefined should equal(true)
+    newBoard.map(_.findPiece(Coordinate(1, 4)).get).map(_ should equal(Hu))
   }
 }
