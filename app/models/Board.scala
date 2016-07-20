@@ -56,8 +56,12 @@ class Board(val pieces: Set[OnBoardPiece]) {
     (verticalLine.map(_.y) intersect onBoardHuCoordinate.map(_.y)).size != 0
   }
 
-  def searchOpponentPieceOrFreeSpace(player: Player, atPoint: Coordinate): Boolean = {
-    pieces.filter(_.player != player).filter(_.coordinate == atPoint).headOption.isDefined
+  def searchOpponentPieceOrFreeSpace(opponentPlayer: Player, atPoint: Coordinate): Boolean = {
+    pieces.filter(_.coordinate == atPoint).headOption match {
+      case Some(p) if p.player == opponentPlayer => true
+      case Some(p) if p.player != opponentPlayer => false
+      case None => true
+    }
   }
 
   def coordinateSum(coordinateA: Coordinate, coordinateB: Coordinate): Coordinate = {
@@ -73,7 +77,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
   }
 
   def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
-    val s = distances.flatMap {
+    distances.flatMap {
       distance => (for {
         i <- (1 to 8)
         c = coordinateSum(xTimesCoordinate(distance, i), atPoint)
@@ -82,9 +86,8 @@ class Board(val pieces: Set[OnBoardPiece]) {
         Coordinate(c.x, c.y)
       }).toList
     }.sortBy(p => (p.x.abs + p.y.abs))
-    s
   }
-  
+
   def searchShortestDistanceFromAtPoint(coordinate: Coordinate, atPoint: Coordinate): Coordinate = {
     val xDistance = coordinate.x - atPoint.x
     val yDistance = coordinate.y - atPoint.y
@@ -102,6 +105,6 @@ class Board(val pieces: Set[OnBoardPiece]) {
     val downRight = RelativeCoordinate(1, -1)
     maxCoordinateRange(List(up, down, left, right, upLeft, upRight, downLeft, downRight), atPoint)
       .filter(pieceOfMoveRange.contains(_))
-      .takeWhile(searchOpponentPieceOrFreeSpace(Black, _))
+      .takeWhile(searchOpponentPieceOrFreeSpace(player, _))
   }
 }
