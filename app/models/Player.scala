@@ -5,10 +5,10 @@ package models
   */
 
 sealed trait Player {
-  def movePiece(game: Game, movePiece: Coordinate, moveCoordinate: Coordinate): Unit = {
-    val piece: Option[Piece] = game.board.findPiece(coordinate)
-
-  }
+//  def movePiece(game: Game, movePieceCoodinate: Coordinate, moveCoordinate: Coordinate): Unit = {
+//    val piece: Option[Piece] = game.board.findPiece(coordinate)
+//
+//  }
 }
 
 final class Black extends Player
