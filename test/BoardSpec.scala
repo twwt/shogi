@@ -8,7 +8,7 @@ class BoardSpec extends FlatSpec with Matchers {
   val ou = Ou
   val player1 = Black
   val player2 = White
-  val onBoardPiece = Set(OnBoardPiece(player1, Ou, Coordinate(5, 9)), OnBoardPiece(player2, Ou, Coordinate(5, 1)), OnBoardPiece(player2, Hu, Coordinate(5, 3)))
+  val onBoardPiece = Set(OnBoardPiece(player1, Ou, Coordinate(5, 9)), OnBoardPiece(player2, Ou, Coordinate(5, 1)), OnBoardPiece(player2, Hu, Coordinate(5, 3)), OnBoardPiece(player2, Ou, Coordinate(5, 6)))
   val board = new Board(onBoardPiece)
 
   behavior of "Board"
@@ -20,7 +20,7 @@ class BoardSpec extends FlatSpec with Matchers {
     val ou: Option[Piece] = board.findPiece(coodinate)
     ou.get should equal(Ou)
   }
-  
+
   //指定ポイントから動くことのできる座標のリストを返す関数
   it should "findMoveCoordinates" in {
     val x = 4
@@ -29,14 +29,14 @@ class BoardSpec extends FlatSpec with Matchers {
     val hu = Hu
     val kaku = Kaku
     val ou = Ou
-//    val canMoveCoordinatesHu: List[Coordinate] = board.findMoveCoordinates(atPoint, hu, player2)
-    val canMoveCoordinatesOu: List[Coordinate] = board.findMoveCoordinates(atPoint, ou, player2)
-//    val canMoveCoordinatesKaku: List[Coordinate] = board.findMoveCoordinates(Coordinate(5, 5), kaku, player2)
-//    canMoveCoordinatesHu.foreach { c =>
-//      c.x should equal(4)
-//      c.y should equal(6)
-//    }
-//    canMoveCoordinatesKaku
+    //    val canMoveCoordinatesHu: List[Coordinate] = board.findMoveCoordinates(atPoint, hu, player2)
+    val canMoveCoordinatesOu: List[Coordinate] = board.findMoveRange(atPoint, ou, player2)
+    //    val canMoveCoordinatesKaku: List[Coordinate] = board.findMoveCoordinates(Coordinate(5, 5), kaku, player2)
+    //    canMoveCoordinatesHu.foreach { c =>
+    //      c.x should equal(4)
+    //      c.y should equal(6)
+    //    }
+    //    canMoveCoordinatesKaku
   }
 
   it should "searchOpponentPieceOrFreeSpace" in {
@@ -55,6 +55,14 @@ class BoardSpec extends FlatSpec with Matchers {
     board.isNihu(Coordinate(5, 4), player2) should equal(true)
     board.isNihu(Coordinate(6, 4), player2) should equal(true)
     board.isNihu(Coordinate(4, 8), player1) should equal(false)
+  }
+
+  it should "maxCoordinateRange" in {
+    board.maxCoordinateRange(Coordinate(0, 1), Coordinate(5, 5))
+  }
+
+  it should "canMoveRange" in {
+    board.canMoveRange(List(Coordinate(5, 6), Coordinate(5, 7)), player1, Coordinate(5, 5))
   }
 
   //  //todo これテストになっているのか？
