@@ -5,7 +5,11 @@ package models
   */
 
 sealed trait Player {
+  def movePiece(coordinate: Coordinate, player: Player): Unit = {
+
+  }
 }
 
 case object Black extends Player
+
 case object White extends Player
