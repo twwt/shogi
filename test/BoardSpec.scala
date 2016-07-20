@@ -6,8 +6,8 @@ class BoardSpec extends FlatSpec with Matchers {
 
   val hu1 = Hu
   val ou = Ou
-  val blackPlayer = Black
-  val whitePlayer = White
+  val blackPlayer = new Black
+  val whitePlayer = new White
   val onBoardPiece = Set(OnBoardPiece(blackPlayer, Ou, Coordinate(5, 9)), OnBoardPiece(whitePlayer, Ou, Coordinate(5, 1)), OnBoardPiece(whitePlayer, Hu, Coordinate(5, 3)), OnBoardPiece(whitePlayer, Ou, Coordinate(5, 7)))
   val board = new Board(onBoardPiece)
 

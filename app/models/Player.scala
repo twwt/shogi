@@ -5,11 +5,12 @@ package models
   */
 
 sealed trait Player {
-  def movePiece(coordinate: Coordinate, player: Player): Unit = {
+  def movePiece(game: Game, movePiece: Coordinate, moveCoordinate: Coordinate): Unit = {
+    val piece: Option[Piece] = game.board.findPiece(coordinate)
 
   }
 }
 
-case object Black extends Player
+final class Black extends Player
 
-case object White extends Player
+final class White extends Player
