@@ -58,7 +58,7 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   it should "maxCoordinateRange" in {
-    board.maxCoordinateRange(Coordinate(0, 1), Coordinate(5, 5))
+    board.maxCoordinateRange(List(RelativeCoordinate(0, 1)), Coordinate(5, 5))
   }
 
   it should "canMoveRange" in {
