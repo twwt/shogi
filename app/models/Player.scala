@@ -8,25 +8,26 @@ import Scalaz._
   */
 
 sealed trait Player {
-  def movePiece(game: Game, movePieceCoodinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
+  def movePiece(game: Game, movePieceCoodinate: Coordinate, afterMoveCoordinate: Coordinate): Option[Game] = {
     val board = game.board
     val selfPlayer: Player = game.player
     val canMovePiece: Option[Boolean] =
       board.findPiece(movePieceCoodinate)
         .map(board.findMoveRange(afterMoveCoordinate, _, selfPlayer))
         .map(_.contains(afterMoveCoordinate))
-    val result: Boolean = canMovePiece match {
+    canMovePiece match {
       //        SomeはPieceがBoardに存在するということ。Booleanは動けるのか動けないのか。
       //        敵
-      case Some(piece) if piece == true => true
+      case Some(piece) if piece == true => takePiece(afterMoveCoordinate, game)
       //        味方
-      case Some(piece) if piece == false => false
+      case Some(piece) if piece == false => None
       //        何も置いてない
-      case None => true
+      case None => takePiece(afterMoveCoordinate, game)
     }
   }
 
-  private def takePiece(takePieceCoordinate: Coordinate, game: Game): Option[Game] = {
+  //todo privateをつける
+  def takePiece(takePieceCoordinate: Coordinate, game: Game): Option[Game] = {
     val board = game.board
     //    boardから駒を消して、持ち駒に消した駒を追加
     val removePiece: Option[OnBoardPiece] = board.pieces.filter(_.coordinate == takePieceCoordinate).headOption

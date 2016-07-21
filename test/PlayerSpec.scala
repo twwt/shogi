@@ -9,13 +9,13 @@ class PlayerSpec extends FlatSpec with Matchers {
   val whitePlayer = new White
   val onBoardPiece = Set(OnBoardPiece(blackPlayer, Ou, Coordinate(5, 9)), OnBoardPiece(whitePlayer, Ou, Coordinate(5, 1)), OnBoardPiece(whitePlayer, Hu, Coordinate(5, 3)), OnBoardPiece(whitePlayer, Ou, Coordinate(5, 7)))
   val board = new Board(onBoardPiece)
-  val pieceInHand: PieceInHand = PieceInHand(Map(whitePlayer -> List(Ou, Hu)), Map(blackPlayer -> List(Hu)))
+  val pieceInHand: PieceInHand = PieceInHand(Map(whitePlayer -> Ou, blackPlayer -> Hu))
 
-  val game = new Game(whitePlayer, board, pieceInHand)
+  val game: Game = new Game(whitePlayer, board, pieceInHand)
   it should "movePiece" in {
-    val newBoard: Option[Board] = whitePlayer.movePiece(board, Coordinate(5, 9), Coordinate(4, 8))
+    val newBoard: Option[Game] = whitePlayer.movePiece(game, Coordinate(5, 9), Coordinate(4, 8))
     newBoard.isDefined should equal(true)
-    newBoard.map(_.findPiece(Coordinate(4, 8)).get).map(_ should equal(Ou))
+    newBoard.map(_.board.findPiece(Coordinate(4, 8)).get).map(_ should equal(Ou))
 
   }
 
@@ -23,9 +23,17 @@ class PlayerSpec extends FlatSpec with Matchers {
   //    val board: Option[Board] = game.parent.changePlayerPiece(piece)
   //  }
   //
-  it should "addPiece" in {
-    val newBoard: Option[Board] = whitePlayer.addPiece(board, Hu, Coordinate(1, 4))
-    newBoard.isDefined should equal(true)
-    newBoard.map(_.findPiece(Coordinate(1, 4)).get).map(_ should equal(Hu))
+  it should "takePiece" in {
+    val newBoard = blackPlayer.takePiece(Coordinate(5, 3), game)
+    newBoard match {
+      case Some(board) => board.pieceInHand.pieces(blackPlayer) should equal(Hu)
+      case None => println(1)
+    }
   }
+
+  //  it should "addPiece" in {
+  //    val newBoard: Option[Board] = whitePlayer.addPiece(board, Hu, Coordinate(1, 4))
+  //    newBoard.isDefined should equal(true)
+  //    newBoard.map(_.findPiece(Coordinate(1, 4)).get).map(_ should equal(Hu))
+  //  }
 }

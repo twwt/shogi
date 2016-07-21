@@ -1,7 +1,5 @@
 package models
 
-import scala.collection.immutable.IndexedSeq
-
 /**
   * Created by taishi on 7/19/16.
   */
