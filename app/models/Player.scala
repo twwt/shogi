@@ -10,19 +10,36 @@ import Scalaz._
 sealed trait Player {
   def movePiece(game: Game, movePieceCoodinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
     val board = game.board
-    val selfPlayer = game.player
+    val selfPlayer: Player = game.player
     val canMovePiece: Option[Boolean] =
       board.findPiece(movePieceCoodinate)
         .map(board.findMoveRange(afterMoveCoordinate, _, selfPlayer))
         .map(_.contains(afterMoveCoordinate))
     val result: Boolean = canMovePiece match {
-//        SomeはPieceがBoardに存在するということ。Booleanは動けるのか動けないのか。
-//        敵
+      //        SomeはPieceがBoardに存在するということ。Booleanは動けるのか動けないのか。
+      //        敵
       case Some(piece) if piece == true => true
-//        味方
+      //        味方
       case Some(piece) if piece == false => false
-//        何も置いてない
+      //        何も置いてない
       case None => true
+    }
+  }
+
+  private def takePiece(takePieceCoordinate: Coordinate, game: Game): Option[Game] = {
+    val board = game.board
+    //    boardから駒を消して、持ち駒に消した駒を追加
+    val removePiece: Option[OnBoardPiece] = board.pieces.filter(_.coordinate == takePieceCoordinate).headOption
+    val newOnBoardPiece: Option[Set[OnBoardPiece]] = removePiece.map(board.pieces - _)
+    val newPieceInHand: Option[Map[Player, Piece]] = removePiece.map(p => game.pieceInHand.pieces + (game.player -> p.piece))
+    if (newOnBoardPiece.isDefined && newPieceInHand.isDefined) {
+      val nextPlayer: Player = game.player match {
+        case _: Black => new White
+        case _: White => new Black
+      }
+      Some(new Game(nextPlayer, new Board(newOnBoardPiece.get), PieceInHand(newPieceInHand.get)))
+    } else {
+      None
     }
   }
 }

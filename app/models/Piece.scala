@@ -16,7 +16,9 @@ case object Kaku extends Piece(List(RelativeCoordinate(0, 0), RelativeCoordinate
 
 case class RelativeCoordinate(x: Int, y: Int)
 
-case class PieceInHand(whitePiece: Map[White, List[Piece]], blackPiece: Map[Black, List[Piece]])
+//pieceInHandの引数にwhitePieceとblackPiece作ったが２にするとループしにくいし２つである必要はないので１つにまとめる。
+//case class PieceInHand(whitePiece: Map[White, List[Piece]], blackPiece: Map[Black, List[Piece]])
+case class PieceInHand(pieces: Map[Player, Piece])
 
 //
 //case class RelativeCoordinatex: Int, y: Int)
