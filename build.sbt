@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   jdbc, cache, ws, specs2 % Test,
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test",
-  "org.typelevel" %% "cats" % "0.6.1"
+  "org.typelevel" %% "cats" % "0.6.1",
+  "org.scalaz" %% "scalaz-core" % "7.2.4"
 )
 
 unmanagedResourceDirectories in Test <+= baseDirectory(_ / "target/web/public/test")

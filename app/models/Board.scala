@@ -26,7 +26,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
       .filter(c => c.y <= 9 && 1 <= c.y)
   }
 
-  def afterMoveCoordinateFromAtPoint(pieceOfMoveRange: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
+  private def afterMoveCoordinateFromAtPoint(pieceOfMoveRange: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
     pieceOfMoveRange.flatMap { c =>
       c match {
         case coordinate if coordinate.x == 0 && coordinate.y == 0 => List(atPoint)
@@ -36,7 +36,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
     }
   }
 
-  def afterMoveCoordinate(coordinate: RelativeCoordinate, atPoint: Coordinate): List[Coordinate] = {
+  private def afterMoveCoordinate(coordinate: RelativeCoordinate, atPoint: Coordinate): List[Coordinate] = {
     val resultCoordinate = Coordinate(coordinate.x + atPoint.x, coordinate.y + atPoint.y)
     val xRange: List[Int] = if (0 < resultCoordinate.x) (atPoint.x to resultCoordinate.x).toList else (resultCoordinate.x to atPoint.x).toList.reverse
     val yRange: List[Int] = if (0 < resultCoordinate.y) (atPoint.y to resultCoordinate.y).toList else (resultCoordinate.y to atPoint.y).toList.reverse
@@ -56,10 +56,10 @@ class Board(val pieces: Set[OnBoardPiece]) {
     (verticalLine.map(_.y) intersect onBoardHuCoordinate.map(_.y)).size != 0
   }
 
-  def searchOpponentPieceOrFreeSpace(opponentPlayer: Player, atPoint: Coordinate): Boolean = {
+  def searchOpponentPieceOrFreeSpace(selfPlayer: Player, atPoint: Coordinate): Boolean = {
     pieces.filter(_.coordinate == atPoint).headOption match {
-      case Some(p) if p.player == opponentPlayer => true
-      case Some(p) if p.player != opponentPlayer => false
+      case Some(p) if p.player != selfPlayer => true
+      case Some(p) if p.player == selfPlayer => false
       case None => true
     }
   }
@@ -94,7 +94,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
     Coordinate(xDistance, yDistance)
   }
 
-  def canMoveRange(pieceOfMoveRange: List[Coordinate], player: Player, atPoint: Coordinate): List[Coordinate] = {
+  def canMoveRange(pieceOfMoveRange: List[RelativeCoordinate], selfPlayer: Player, atPoint: Coordinate): List[Coordinate] = {
     val up = RelativeCoordinate(0, 1)
     val down = RelativeCoordinate(0, -1)
     val left = RelativeCoordinate(-1, 0)
@@ -105,6 +105,6 @@ class Board(val pieces: Set[OnBoardPiece]) {
     val downRight = RelativeCoordinate(1, -1)
     maxCoordinateRange(List(up, down, left, right, upLeft, upRight, downLeft, downRight), atPoint)
       .filter(pieceOfMoveRange.contains(_))
-      .takeWhile(searchOpponentPieceOrFreeSpace(player, _))
+      .takeWhile(searchOpponentPieceOrFreeSpace(selfPlayer, _))
   }
 }
