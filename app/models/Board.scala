@@ -1,5 +1,9 @@
 package models
 
+import shapeless._
+import scala.collection.immutable.ListMap
+import scala.language.higherKinds
+
 /**
   * Created by taishi on 7/19/16.
   */
@@ -30,9 +34,7 @@ case object _8 extends AxisLength(8)
 
 case object _9 extends AxisLength(9)
 
-case class OnBoardPiece(player: Player, piece: Piece, coordinate: Coordinate)
-
-class Board(val onBoardPieces: Set[OnBoardPiece]) {
+class Board(val onBoardPieces: shapeless.Sized[List[shapeless.Sized[Option[ListMap[Player, Piece]], shapeless.nat._9]], shapeless.nat._9]) {
 
   def intToAxisLenght(int: Int): AxisLength = {
     int match {
