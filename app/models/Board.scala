@@ -10,48 +10,47 @@ case class PieceInHand(pieces: Map[Player, Piece])
 
 sealed abstract class AxisLength(val length: Int)
 
-case object Zero extends AxisLength(0)
+case object _0 extends AxisLength(0)
 
-case object One extends AxisLength(1)
+case object _1 extends AxisLength(1)
 
-case object Two extends AxisLength(2)
+case object _2 extends AxisLength(2)
 
-case object Three extends AxisLength(3)
+case object _3 extends AxisLength(3)
 
-case object Four extends AxisLength(4)
+case object _4 extends AxisLength(4)
 
-case object Five extends AxisLength(5)
+case object _5 extends AxisLength(5)
 
-case object Six extends AxisLength(6)
+case object _6 extends AxisLength(6)
 
-case object Seven extends AxisLength(7)
+case object _7 extends AxisLength(7)
 
-case object Eight extends AxisLength(8)
+case object _8 extends AxisLength(8)
 
-case object Nine extends AxisLength(9)
-
+case object _9 extends AxisLength(9)
 
 case class OnBoardPiece(player: Player, piece: Piece, coordinate: Coordinate)
 
-class Board(val pieces: Set[OnBoardPiece]) {
+class Board(val onBoardPieces: Set[OnBoardPiece]) {
 
   def intToAxisLenght(int: Int): AxisLength = {
     int match {
-      case 0 => Zero
-      case 1 => One
-      case 2 => Two
-      case 3 => Three
-      case 4 => Four
-      case 5 => Five
-      case 6 => Six
-      case 7 => Seven
-      case 8 => Eight
-      case 9 => Nine
+      case 0 => _0
+      case 1 => _1
+      case 2 => _2
+      case 3 => _3
+      case 4 => _4
+      case 5 => _5
+      case 6 => _6
+      case 7 => _7
+      case 8 => _8
+      case 9 => _9
     }
   }
 
   def findPiece(coordinate: Coordinate): Option[Piece] = {
-    pieces.filter(_.coordinate == coordinate) match {
+    onBoardPieces.filter(_.coordinate == coordinate) match {
       case c if c.size == 0 => None
       case c if c.size == 1 => Some(c.head.piece)
     }
@@ -85,7 +84,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
     val verticalLine: Set[Coordinate] = (1 to 9).map {
       Coordinate(atPoint.x, _)
     }.toSet
-    val onBoardHuCoordinate: Set[Coordinate] = pieces.filter(_.player == player).filter {
+    val onBoardHuCoordinate: Set[Coordinate] = onBoardPieces.filter(_.player == player).filter {
       _.piece match {
         case Hu => true
         case _ => false
@@ -95,7 +94,7 @@ class Board(val pieces: Set[OnBoardPiece]) {
   }
 
   def searchOpponentPieceOrFreeSpace(selfPlayer: Player, atPoint: Coordinate): Boolean = {
-    pieces.filter(_.coordinate == atPoint).headOption match {
+    onBoardPieces.filter(_.coordinate == atPoint).headOption match {
       case Some(p) if p.player != selfPlayer => true
       case Some(p) if p.player == selfPlayer => false
       case None => true
