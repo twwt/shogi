@@ -4,7 +4,32 @@ package models
   * Created by taishi on 7/19/16.
   */
 
-case class Coordinate(x: Int, y: Int)
+case class Coordinate(x: AxisLength, y: AxisLength)
+
+case class PieceInHand(pieces: Map[Player, Piece])
+
+sealed abstract class AxisLength(val length: Int)
+
+case object Zero extends AxisLength(0)
+
+case object One extends AxisLength(1)
+
+case object Two extends AxisLength(2)
+
+case object Three extends AxisLength(3)
+
+case object Four extends AxisLength(4)
+
+case object Five extends AxisLength(5)
+
+case object Six extends AxisLength(6)
+
+case object Seven extends AxisLength(7)
+
+case object Eight extends AxisLength(8)
+
+case object Nine extends AxisLength(9)
+
 
 case class OnBoardPiece(player: Player, piece: Piece, coordinate: Coordinate)
 
