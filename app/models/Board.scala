@@ -59,12 +59,10 @@ class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option
     }
   }
 
-  def findPiece(coordinate: Coordinate): Option[Piece] = {
-    board.takeX
-    onBoardPieces.filter(_.coordinate == coordinate) match {
-      case c if c.size == 0 => None
-      case c if c.size == 1 => Some(c.head.piece)
-    }
+  def findPiece(coordinate: Coordinate)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]): Option[Map[Player, Piece]] = {
+    val x = coordinate.x.length
+    val y = coordinate.y.length
+    boardState(x)(y)
   }
 
 
