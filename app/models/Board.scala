@@ -35,6 +35,21 @@ case class OnBoardPiece(player: Player, piece: Piece, coordinate: Coordinate)
 
 class Board(val pieces: Set[OnBoardPiece]) {
 
+  def intToAxisLenght(int: Int): AxisLength = {
+    int match {
+      case 0 => Zero
+      case 1 => One
+      case 2 => Two
+      case 3 => Three
+      case 4 => Four
+      case 5 => Five
+      case 6 => Six
+      case 7 => Seven
+      case 8 => Eight
+      case 9 => Nine
+    }
+  }
+
   def findPiece(coordinate: Coordinate): Option[Piece] = {
     pieces.filter(_.coordinate == coordinate) match {
       case c if c.size == 0 => None
@@ -60,10 +75,10 @@ class Board(val pieces: Set[OnBoardPiece]) {
   }
 
   private def afterMoveCoordinate(coordinate: RelativeCoordinate, atPoint: Coordinate): List[Coordinate] = {
-    val resultCoordinate = Coordinate(coordinate.x + atPoint.x, coordinate.y + atPoint.y)
-    val xRange: List[Int] = if (0 < resultCoordinate.x) (atPoint.x to resultCoordinate.x).toList else (resultCoordinate.x to atPoint.x).toList.reverse
-    val yRange: List[Int] = if (0 < resultCoordinate.y) (atPoint.y to resultCoordinate.y).toList else (resultCoordinate.y to atPoint.y).toList.reverse
-    xRange.zip(yRange).map(c => Coordinate(c._1, c._2))
+    val resultCoordinate = Coordinate(intToAxisLenght(coordinate.x + atPoint.x.length), intToAxisLenght(coordinate.y + atPoint.y.length))
+    val xRange: List[Int] = if (0 < resultCoordinate.x.length) (atPoint.x.length to resultCoordinate.x.length).toList else (resultCoordinate.x.length to atPoint.x.length).toList.reverse
+    val yRange: List[Int] = if (0 < resultCoordinate.y.length) (atPoint.y.length to resultCoordinate.y.length).toList else (resultCoordinate.y.length to atPoint.y.length).toList.reverse
+    xRange.zip(yRange).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2)))
   }
 
   def isNihu(atPoint: Coordinate, player: Player) = {
