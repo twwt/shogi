@@ -44,6 +44,10 @@ class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option
     boardState.map(p => p(takeNum))
   }
 
+  def takeAtPoint(x: Int, y: Int)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]) = {
+    boardState(x)(y)
+  }
+
   def intToAxisLenght(int: Int): AxisLength = {
     int match {
       case 0 => _0
@@ -91,28 +95,17 @@ class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option
 
   def isNihu(atPoint: Coordinate, player: Player): Boolean = {
     val atPointX = atPoint.x.length
-    val Y: List[Option[Map[Player, Piece]]] = board(atPointX).unsized
-    Y.map(_.filter(_ (player) == Hu).isDefined).forall(_ == true)
+    val y: Sized[List[Option[Map[Player, Piece]]], nat._9] = board(atPointX)
+    y.map(_.filter(_ (player) == Hu).isDefined).forall(_ == true)
   }
 
-  def isNihu(atPoint: Coordinate, player: Player) = {
-    val verticalLine: Set[Coordinate] = (1 to 9).map {
-      Coordinate(atPoint.x, _)
-    }.toSet
-    val onBoardHuCoordinate: Set[Coordinate] = onBoardPieces.filter(_.player == player).filter {
-      _.piece match {
-        case Hu => true
-        case _ => false
-      }
-    }.map(_.coordinate)
-    (verticalLine.map(_.y) intersect onBoardHuCoordinate.map(_.y)).size != 0
-  }
-
-  def searchOpponentPieceOrFreeSpace(selfPlayer: Player, atPoint: Coordinate): Boolean = {
-    onBoardPieces.filter(_.coordinate == atPoint).headOption match {
-      case Some(p) if p.player != selfPlayer => true
-      case Some(p) if p.player == selfPlayer => false
+  def isEnemyPieceOrFreeSpace(selfPlayer: Player, atPoint: Coordinate): Boolean = {
+    val atPointX = atPoint.x.length
+    val atPointY = atPoint.y.length
+    board(atPointX)(atPointY) match {
       case None => true
+      case Some(p) if p.contains(selfPlayer) == true => false
+      case Some(p) if p.contains(selfPlayer) == false => true
     }
   }
 
