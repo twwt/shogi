@@ -65,17 +65,6 @@ class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option
     boardState(x)(y)
   }
 
-
-  def findPiece(coordinate: Coordinate): Option[Piece] = {
-    val x: Int = coordinate.x.length
-    val y: Int = coordinate.y.length
-    onBoardPieces.map()
-    onBoardPieces.filter(_.coordinate == coordinate) match {
-      case c if c.size == 0 => None
-      case c if c.size == 1 => Some(c.head.piece)
-    }
-  }
-
   def findMoveRange(atPoint: Coordinate, piece: Piece, player: Player): List[Coordinate] = {
     afterMoveCoordinateFromAtPoint(piece.moveRange, atPoint)
       .distinct.filter(_ != atPoint)
@@ -94,7 +83,7 @@ class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option
   }
 
   private def afterMoveCoordinate(coordinate: RelativeCoordinate, atPoint: Coordinate): List[Coordinate] = {
-    val resultCoordinate = Coordinate(intToAxisLenght(coordinate.x + atPoint.x.length), intToAxisLenght(coordinate.y + atPoint.y.length))
+    val resultCoordinate = Coordinate(intToAxisLenght(coordinate.x.length + atPoint.x.length), intToAxisLenght(coordinate.y.length + atPoint.y.length))
     val xRange: List[Int] = if (0 < resultCoordinate.x.length) (atPoint.x.length to resultCoordinate.x.length).toList else (resultCoordinate.x.length to atPoint.x.length).toList.reverse
     val yRange: List[Int] = if (0 < resultCoordinate.y.length) (atPoint.y.length to resultCoordinate.y.length).toList else (resultCoordinate.y.length to atPoint.y.length).toList.reverse
     xRange.zip(yRange).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2)))
