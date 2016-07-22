@@ -34,7 +34,15 @@ case object _8 extends AxisLength(8)
 
 case object _9 extends AxisLength(9)
 
-class Board(val onBoardPieces: shapeless.Sized[List[shapeless.Sized[Option[ListMap[Player, Piece]], shapeless.nat._9]], shapeless.nat._9]) {
+class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]) {
+
+  def takeX(takeNum: Int)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]) = {
+    boardState(takeNum)
+  }
+
+  def takeY(takeNum: Int)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]) = {
+    boardState.map(p => p(takeNum))
+  }
 
   def intToAxisLenght(int: Int): AxisLength = {
     int match {
@@ -52,6 +60,18 @@ class Board(val onBoardPieces: shapeless.Sized[List[shapeless.Sized[Option[ListM
   }
 
   def findPiece(coordinate: Coordinate): Option[Piece] = {
+    board.takeX
+    onBoardPieces.filter(_.coordinate == coordinate) match {
+      case c if c.size == 0 => None
+      case c if c.size == 1 => Some(c.head.piece)
+    }
+  }
+
+
+  def findPiece(coordinate: Coordinate): Option[Piece] = {
+    val x: Int = coordinate.x.length
+    val y: Int = coordinate.y.length
+    onBoardPieces.map()
     onBoardPieces.filter(_.coordinate == coordinate) match {
       case c if c.size == 0 => None
       case c if c.size == 1 => Some(c.head.piece)
