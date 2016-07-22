@@ -67,19 +67,19 @@ class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option
 
   def findMoveRange(atPoint: Coordinate, piece: Piece, player: Player): List[Coordinate] = {
     afterMoveCoordinateFromAtPoint(piece.moveRange, atPoint)
-      .distinct.filter(_ != atPoint)
-      .filter(c => c.x <= 9 && 1 <= c.x)
-      .filter(c => c.y <= 9 && 1 <= c.y)
+      .filter(_ != atPoint)
+      .filter(c => c.x.length <= 9 && 1 <= c.x.length)
+      .filter(c => c.y.length <= 9 && 1 <= c.y.length).toList
   }
 
-  private def afterMoveCoordinateFromAtPoint(pieceOfMoveRange: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
+  private def afterMoveCoordinateFromAtPoint(pieceOfMoveRange: List[RelativeCoordinate], atPoint: Coordinate): Set[Coordinate] = {
     pieceOfMoveRange.flatMap { c =>
       c match {
         case coordinate if coordinate.x == 0 && coordinate.y == 0 => List(atPoint)
-        case coordinate if c.x.abs == c.y.abs => afterMoveCoordinate(coordinate, atPoint)
-        case coordinate if c.x.abs != c.y.abs => afterMoveCoordinate(coordinate, atPoint)
+        case coordinate if c.x.length.abs == c.y.length.abs => afterMoveCoordinate(coordinate, atPoint)
+        case coordinate if c.x.length.abs != c.y.length.abs => afterMoveCoordinate(coordinate, atPoint)
       }
-    }
+    }.toSet
   }
 
   private def afterMoveCoordinate(coordinate: RelativeCoordinate, atPoint: Coordinate): List[Coordinate] = {
