@@ -5,42 +5,50 @@ package models
   */
 sealed abstract class Piece(val moveRange: List[RelativeCoordinate])
 
-case object Ou extends Piece(List(RelativeCoordinate(0, 1), RelativeCoordinate(0, -1), RelativeCoordinate(-1, 0), RelativeCoordinate(1, 0), RelativeCoordinate(-1, 1), RelativeCoordinate(1, 1), RelativeCoordinate(-1, -1), RelativeCoordinate(1, -1)))
+case object Ou extends Piece(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r__1), RelativeCoordinate(r__1, r_0), RelativeCoordinate(r_1, r_0), RelativeCoordinate(r__1, r_1), RelativeCoordinate(r_1, r_1), RelativeCoordinate(r__1, r__1), RelativeCoordinate(r_1, r_1)))
 
-case object Hu extends Piece(List(RelativeCoordinate(0, 1), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0)))
+case object Hu extends Piece(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0)))
 
-case object Kaku extends Piece(List(RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(-8, 8), RelativeCoordinate(8, 8), RelativeCoordinate(-8, -8), RelativeCoordinate(8, -8)))
+case object Kaku extends Piece(List(RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r__8, r_8), RelativeCoordinate(r_8, r_8), RelativeCoordinate(r__8, r__8), RelativeCoordinate(r_8, r_8)))
 
-//CoordicateがあるのになぜRelativeCoordinate？Coordinateは絶対的な座標、RelativeCoordinate
-//なぜMoveRangeを作ったのか？productIteratorでloopさせたかったから
+sealed abstract class RelativeRenge(val length: Int)
 
-case class RelativeCoordinate(x: Int, y: Int)
+case object r_0 extends RelativeRenge(0)
 
-//pieceInHandの引数にwhitePieceとblackPiece作ったが２にするとループしにくいし２つである必要はないので１つにまとめる。
-//case class PieceInHand(whitePiece: Map[White, List[Piece]], blackPiece: Map[Black, List[Piece]])
+case object r_1 extends RelativeRenge(1)
 
-//
-//case class RelativeCoordinatex: Int, y: Int)
-//
-//case class RelativeCoordinate(x: Int, y: Int)
-//
-//case class RelativeCoordinate(x: Int, y: Int)
-//
-//case class RelativeCoordinate(x: Int, y: Int)
-//
-//case class RelativeCoordinate(x: Int, y: Int)
-//
-//case class RelativeCoordinate(x: Int, y: Int)
-//
-//case class RelativeCoordinate(x: Int, y: Int)
-//
-//case class RelativeCoordinate(x: Int, y: Int)
-//
-//sealed abstract class Piece(val movement: MoveRange)
-//
-//case object Ou extends Piece(RelativeCoordinate0, 1), RelativeCoordinate(0, -1), RelativeCoordinate(-1, 0), RelativeCoordinate(1, 0), RelativeCoordinate(-1, 1), RelativeCoordinate(1, 1), RelativeCoordinate(-1, -1), RelativeCoordinate(1, -1)))
-//
-//case object Hu extends Piece(RelativeCoordinate0, 1), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0)))
-//
-//case object Kaku extends Piece(RelativeCoordinate0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(0, 0), RelativeCoordinate(-8, 8), RelativeCoordinate(8, 8), RelativeCoordinate(-8, -8), RelativeCoordinate(8, -8)))
-//
+case object r_2 extends RelativeRenge(2)
+
+case object r_3 extends RelativeRenge(3)
+
+case object r_4 extends RelativeRenge(4)
+
+case object r_5 extends RelativeRenge(5)
+
+case object r_6 extends RelativeRenge(6)
+
+case object r_7 extends RelativeRenge(7)
+
+case object r_8 extends RelativeRenge(8)
+
+case object r_9 extends RelativeRenge(9)
+
+case object r__1 extends RelativeRenge(-1)
+
+case object r__2 extends RelativeRenge(-2)
+
+case object r__3 extends RelativeRenge(-3)
+
+case object r__4 extends RelativeRenge(-4)
+
+case object r__5 extends RelativeRenge(-5)
+
+case object r__6 extends RelativeRenge(-6)
+
+case object r__7 extends RelativeRenge(-7)
+
+case object r__8 extends RelativeRenge(-8)
+
+case object r__9 extends RelativeRenge(-9)
+
+case class RelativeCoordinate(x: RelativeRenge, y: RelativeRenge)
