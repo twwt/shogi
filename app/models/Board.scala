@@ -89,6 +89,12 @@ class Board(implicit val board: shapeless.Sized[List[shapeless.Sized[List[Option
     xRange.zip(yRange).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2)))
   }
 
+  def isNihu(atPoint: Coordinate, player: Player): Boolean = {
+    val atPointX = atPoint.x.length
+    val Y: List[Option[Map[Player, Piece]]] = board(atPointX).unsized
+    Y.map(_.filter(_ (player) == Hu).isDefined).forall(_ == true)
+  }
+
   def isNihu(atPoint: Coordinate, player: Player) = {
     val verticalLine: Set[Coordinate] = (1 to 9).map {
       Coordinate(atPoint.x, _)
