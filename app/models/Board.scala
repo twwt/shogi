@@ -33,10 +33,6 @@ case object _9 extends AxisLength(9)
 
 class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]) {
 
-  //  val ou = Ou
-  //  val l: AxisLength :: AxisLength :: Player :: Option[Piece] :: HNil = _2 :: _3 :: new White :: Some(Ou) :: HNil
-  //  List(l,l,l)
-  //
   def takeX(takeNum: AxisLength)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]): Sized[List[Option[Map[Player, Piece]]], nat._9] = {
     boardState.unsized(takeNum.length)
   }
@@ -141,7 +137,6 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     val y = coordinate.y.length * xTimes
     Coordinate(intToAxisLenght(x), intToAxisLenght(y))
   }
-
 
   //  def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
   //    distances.map(coordinateSum(atPoint, _))

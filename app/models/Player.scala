@@ -32,7 +32,7 @@ sealed trait Player {
       case None => takePiece(movePieceCoodinate, afterMoveCoordinate, game)
     }
   }
-  
+
   def takePiece(movePieceCoordinate: Coordinate, takePieceCoordinate: Coordinate, game: Game): Option[Game] = {
     val board: Board = game.board
     implicit val boardState: Sized[List[Sized[List[Option[Map[Player, Piece]]], nat._9]], nat._9] = game.board.boardState
