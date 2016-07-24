@@ -156,12 +156,12 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   //      }).toList
   //    }.sortBy(p => (p.x.abs + p.y.abs))
   //  }
-  //
-  //  def searchShortestDistanceFromAtPoint(coordinate: Coordinate, atPoint: Coordinate): Coordinate = {
-  //    val xDistance = coordinate.x - atPoint.x
-  //    val yDistance = coordinate.y - atPoint.y
-  //    Coordinate(xDistance, yDistance)
-  //  }
+
+  def searchShortestDistanceFromAtPoint(coordinate: Coordinate, atPoint: Coordinate): Coordinate = {
+    val xDistance = coordinate.x.length - atPoint.x.length
+    val yDistance = coordinate.y.length - atPoint.y.length
+    Coordinate(intToAxisLenght(xDistance), intToAxisLenght(yDistance))
+  }
 
   //  def canMoveRange(pieceOfMoveRange: List[RelativeCoordinate], selfPlayer: Player, atPoint: Coordinate): List[Coordinate] = {
   //    val up = RelativeCoordinate(0, 1)
