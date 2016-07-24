@@ -138,12 +138,12 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     Coordinate(intToAxisLenght(x), intToAxisLenght(y))
   }
 
-  //  def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
-  //    distances.map(coordinateSum(atPoint, _))
-  //      .filter(_.x.length <= 9)
-  //      .filter(_.y.length <= 9)
-  //      .sortBy(p => (p.x.abs + p.y.abs))
-  //  }
+  def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
+    distances.map(coordinateSum(atPoint, _))
+      .filter(_.x.length <= 9)
+      .filter(_.y.length <= 9)
+      .sortBy(p => (p.x.length.abs + p.y.length.abs))
+  }
 
   //  def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
   //    distances.flatMap {
