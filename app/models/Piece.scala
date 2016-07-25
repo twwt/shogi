@@ -5,7 +5,7 @@ package models
   */
 sealed abstract class Piece(val moveRange: List[RelativeCoordinate])
 
-case object Ou extends Piece(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r__1), RelativeCoordinate(r__1, r_0), RelativeCoordinate(r_1, r_0), RelativeCoordinate(r__1, r_1), RelativeCoordinate(r_1, r_1), RelativeCoordinate(r__1, r__1), RelativeCoordinate(r_1, r_1)))
+case object Ou extends Piece(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r__1), RelativeCoordinate(r__1, r_0), RelativeCoordinate(r_1, r_0), RelativeCoordinate(r__1, r_1), RelativeCoordinate(r_1, r_1), RelativeCoordinate(r__1, r__1), RelativeCoordinate(r_1, r__1)))
 
 case object Hu extends Piece(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0)))
 

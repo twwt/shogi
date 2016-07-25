@@ -47,9 +47,13 @@ class BoardSpec extends FlatSpec with Matchers {
 
   it should "isMoveDirection" in {
     val ouMoveRange: List[RelativeCoordinate] = Ou.moveRange.filter(board.isMoveDirection)
-    ouMoveRange should equal(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r__1), RelativeCoordinate(r__1, r_0), RelativeCoordinate(r_1, r_0), RelativeCoordinate(r__1, r_1), RelativeCoordinate(r_1, r_1), RelativeCoordinate(r__1, r__1), RelativeCoordinate(r_1, r_1)))
+    ouMoveRange should equal(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r__1), RelativeCoordinate(r__1, r_0), RelativeCoordinate(r_1, r_0), RelativeCoordinate(r__1, r_1), RelativeCoordinate(r_1, r_1), RelativeCoordinate(r__1, r__1), RelativeCoordinate(r_1, r__1)))
     val huMoveRange: List[RelativeCoordinate] = Hu.moveRange.filter(board.isMoveDirection)
     huMoveRange should equal(List(RelativeCoordinate(r_0, r_1)))
+  }
+
+  it should "moveRange" in {
+    board.moveRange(Kaku.moveRange, Coordinate(_5, _5))
   }
 
 }
