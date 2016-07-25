@@ -63,17 +63,17 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     boardState.unsized(x.length).unsized(y.length)
   }
 
-  def intToAxisLenght(int: Int): AxisLength = {
+  def intToAxisLenght(int: Nat): AxisLength = {
     int match {
-      case 1 => _1
-      case 2 => _2
-      case 3 => _3
-      case 4 => _4
-      case 5 => _5
-      case 6 => _6
-      case 7 => _7
-      case 8 => _8
-      case 9 => _9
+      case Nat._1 => _1
+      case Nat._2 => _2
+      case Nat._3 => _3
+      case Nat._4 => _4
+      case Nat._5 => _5
+      case Nat._6 => _6
+      case Nat._7 => _7
+      case Nat._8 => _8
+      case Nat._9 => _9
     }
   }
 
@@ -115,10 +115,16 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     }
   }
 
-  def findPiece(coordinate: Coordinate)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]): Option[Map[Player, Piece]] = {
-    val x = coordinate.x.length
-    val y = coordinate.y.length
+  def findSpace(coordinate: Coordinate)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]): Option[Map[Player, Piece]] = {
+    val x = coordinate.x.length - 1
+    val y = coordinate.y.length - 1
     boardState.unsized(x).unsized(y)
+  }
+
+  def findPiece(coordinate: Coordinate, player: Player)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]): Option[Piece] = {
+    val x = coordinate.x.length - 1
+    val y = coordinate.y.length - 1
+    boardState.unsized(x).unsized(y).map(_ (player))
   }
 
   //atPointから動ける距離
@@ -140,10 +146,12 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   }
 
   private def afterMoveCoordinate(coordinate: RelativeCoordinate, atPoint: Coordinate): List[Coordinate] = {
-    val resultCoordinate = Coordinate(intToAxisLenght(coordinate.x.length + atPoint.x.length), intToAxisLenght(coordinate.y.length + atPoint.y.length))
+    val natX = intToNat(coordinate.x.length + atPoint.x.length)
+    val natY = intToNat(coordinate.y.length + atPoint.y.length)
+    val resultCoordinate = Coordinate(intToAxisLenght(natX), intToAxisLenght(natY))
     val xRange: List[Int] = if (0 < resultCoordinate.x.length) (atPoint.x.length to resultCoordinate.x.length).toList else (resultCoordinate.x.length to atPoint.x.length).toList.reverse
     val yRange: List[Int] = if (0 < resultCoordinate.y.length) (atPoint.y.length to resultCoordinate.y.length).toList else (resultCoordinate.y.length to atPoint.y.length).toList.reverse
-    xRange.zip(yRange).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2)))
+    xRange.zip(yRange).map(c => Coordinate(intToAxisLenght(intToNat(c._1)), intToAxisLenght(intToNat(c._2))))
   }
 
   def isNihu(atPoint: Coordinate, player: Player): Boolean = {
@@ -173,51 +181,51 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   }
 
   def coordinateSum(coordinateA: Coordinate, coordinateB: Coordinate): Coordinate = {
-    val x = coordinateA.x.length + coordinateB.x.length
-    val y = coordinateA.y.length + coordinateB.y.length
+    val x = intToNat(coordinateA.x.length + coordinateB.x.length)
+    val y = intToNat(coordinateA.y.length + coordinateB.y.length)
     Coordinate(intToAxisLenght(x), intToAxisLenght(y))
   }
 
   def coordinateSum(coordinate: Coordinate, relativeCoordinate: RelativeCoordinate): Coordinate = {
-    val x = coordinate.x.length + relativeCoordinate.x.length
-    val y = coordinate.y.length + relativeCoordinate.y.length
+    val x = intToNat(coordinate.x.length + relativeCoordinate.x.length)
+    val y = intToNat(coordinate.y.length + relativeCoordinate.y.length)
     Coordinate(intToAxisLenght(x), intToAxisLenght(y))
   }
 
   def xTimesCoordinate(coordinate: RelativeCoordinate, xTimes: Int) = {
-    val x = coordinate.x.length * xTimes
-    val y = coordinate.y.length * xTimes
+    val x = intToNat(coordinate.x.length * xTimes)
+    val y = intToNat(coordinate.y.length * xTimes)
     Coordinate(intToAxisLenght(x), intToAxisLenght(y))
   }
 
-  def maxCoordinateRange(atPoint: Coordinate): List[Coordinate] = {
-    val up = RelativeCoordinate(r_0, r_1)
-    val down = RelativeCoordinate(r_0, r__1)
-    val left = RelativeCoordinate(r__1, r_0)
-    val right = RelativeCoordinate(r_1, r_0)
-    val upLeft = RelativeCoordinate(r_1, r__1)
-    val upRight = RelativeCoordinate(r_1, r_1)
-    val downLeft = RelativeCoordinate(r__1, r__1)
-    val downRight = RelativeCoordinate(r__1, r_1)
-    (1 to 8).map(List(up, down, left, right, upLeft, upRight, downLeft, downRight)
-    def aroundSearch(i: Int, list: List[Coordinate]): List[Coordinate] = {
-      val result: List[Coordinate] = List(up, down, left, right, upLeft, upRight, downLeft, downRight).map { c =>
-        (1 to 8).map { i =>
-          Coordinate(intToAxisLenght(c.x.length + i), intToAxisLenght(c.x.length + i))
-        }.filter(c => c.x.length <= 9 || c.y.length <= 9)
-          .map(s => s)
-      }
-      def distance(int: Int, relativeCoordinate: RelativeCoordinate): Coordinate = {
-        val r = RelativeCoordinate(intToRelativeRange((relativeCoordinate.x.length * int) + atPoint.x.length), intToRelativeRange((relativeCoordinate.y.length * int) + atPoint.y.length))
-        1 match {
-          case s if isSelfPlayerPiece(s, coordinate) =>
-        }
-        distance(int + 1, r)
-      }
-    }
-    val nextIndex = i + 1
-    if (i <= 9) aroundSearch(nextIndex, result) else result
-  }
+  //  def maxCoordinateRange(atPoint: Coordinate): List[Coordinate] = {
+  //    val up = RelativeCoordinate(r_0, r_1)
+  //    val down = RelativeCoordinate(r_0, r__1)
+  //    val left = RelativeCoordinate(r__1, r_0)
+  //    val right = RelativeCoordinate(r_1, r_0)
+  //    val upLeft = RelativeCoordinate(r_1, r__1)
+  //    val upRight = RelativeCoordinate(r_1, r_1)
+  //    val downLeft = RelativeCoordinate(r__1, r__1)
+  //    val downRight = RelativeCoordinate(r__1, r_1)
+  //    (1 to 8).map(List(up, down, left, right, upLeft, upRight, downLeft, downRight)
+  //    def aroundSearch(i: Int, list: List[Coordinate]): List[Coordinate] = {
+  //      val result: List[Coordinate] = List(up, down, left, right, upLeft, upRight, downLeft, downRight).map { c =>
+  //        (1 to 8).map { i =>
+  //          Coordinate(intToAxisLenght(c.x.length + i), intToAxisLenght(c.x.length + i))
+  //        }.filter(c => c.x.length <= 9 || c.y.length <= 9)
+  //          .map(s => s)
+  //      }
+  //      def distance(int: Int, relativeCoordinate: RelativeCoordinate): Coordinate = {
+  //        val r = RelativeCoordinate(intToRelativeRange((relativeCoordinate.x.length * int) + atPoint.x.length), intToRelativeRange((relativeCoordinate.y.length * int) + atPoint.y.length))
+  //        1 match {
+  //          case s if isSelfPlayerPiece(s, coordinate) =>
+  //        }
+  //        distance(int + 1, r)
+  //      }
+  //    }
+  //    val nextIndex = i + 1
+  //    if (i <= 9) aroundSearch(nextIndex, result) else result
+  //  }
 
   //  def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
   //    distances.flatMap {
@@ -232,17 +240,25 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   //  }
 
   def searchShortestDistanceFromAtPoint(longestCoordinate: Coordinate, atPoint: Coordinate): Coordinate = {
-    val xDistance = longestCoordinate.x.length - atPoint.x.length
-    val yDistance = longestCoordinate.y.length - atPoint.y.length
+    val xDistance = intToNat(longestCoordinate.x.length - atPoint.x.length)
+    val yDistance = intToNat(longestCoordinate.y.length - atPoint.y.length)
     val resultCoordinate = Coordinate(intToAxisLenght(xDistance), intToAxisLenght(yDistance))
     coordinateSum(resultCoordinate, atPoint)
   }
 
-  def canMoveRange(pieceOfMoveRange: List[RelativeCoordinate], selfPlayer: Player, atPoint: Coordinate): List[Coordinate] = {
-
-    maxCoordinateRange(atPoint)
-    maxCoordinateRange(List(up, down, left, right, upLeft, upRight, downLeft, downRight), atPoint)
-      .filter(pieceOfMoveRange.contains(_))
-      .takeWhile(searchShortestDistanceFromAtPoint(_, atPoint))
+  val isMoveDirection: PartialFunction[RelativeCoordinate, Boolean] = {
+    case c: RelativeCoordinate if c.x.length == 0 && c.y.length == 0 => false
+    case _ => true
   }
+
+  //  def canMoveRange(piece: Piece, selfPlayer: Player, atPoint: Coordinate): List[Coordinate] = {
+  //
+  //    piece.moveRange.filter(isMoveDirection)
+  //
+  //    //      .filter(isMoveDirection)
+  //    maxCoordinateRange(atPoint)
+  //    maxCoordinateRange(List(up, down, left, right, upLeft, upRight, downLeft, downRight), atPoint)
+  //      .filter(pieceOfMoveRange.contains(_))
+  //      .takeWhile(searchShortestDistanceFromAtPoint(_, atPoint))
+  //  }
 }
