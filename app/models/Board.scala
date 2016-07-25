@@ -31,6 +31,24 @@ case object _8 extends AxisLength(8)
 
 case object _9 extends AxisLength(9)
 
+sealed abstract class Direction(x: RelativeRange, y: RelativeRange)
+
+case object Up extends Direction(r_0, r_1)
+
+case object Down extends Direction(r_0, r__1)
+
+case object Left extends Direction(r__1, r_0)
+
+case object Right extends Direction(r_1, r_0)
+
+case object UpLeft extends Direction(r_1, r__1)
+
+case object UpRight extends Direction(r_1, r_1)
+
+case object DownLeft extends Direction(r__1, r__1)
+
+case object DownRight extends Direction(r__1, r_1)
+
 class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]) {
 
   def takeX(takeNum: AxisLength)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]): Sized[List[Option[Map[Player, Piece]]], nat._9] = {
@@ -70,6 +88,30 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
       case 7 => Nat._7
       case 8 => Nat._8
       case 9 => Nat._9
+    }
+  }
+
+  def intToRelativeRange(int: Int): RelativeRange = {
+    int match {
+      case 0 => r_0
+      case 1 => r_1
+      case 2 => r_2
+      case 3 => r_3
+      case 4 => r_4
+      case 5 => r_5
+      case 6 => r_6
+      case 7 => r_7
+      case 8 => r_8
+      case 9 => r_9
+      case -1 => r__1
+      case -2 => r__2
+      case -3 => r__3
+      case -4 => r__4
+      case -5 => r__5
+      case -6 => r__6
+      case -7 => r__7
+      case -8 => r__8
+      case -9 => r__9
     }
   }
 
@@ -120,6 +162,16 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     }
   }
 
+  def isSelfPlayerPiece(selfPlayer: Player, atPoint: Coordinate): Boolean = {
+    val atPointX = atPoint.x.length
+    val atPointY = atPoint.y.length
+    boardState.unsized(atPointX).unsized(atPointY) match {
+      case None => false
+      case Some(p) if p.contains(selfPlayer) == true => true
+      case Some(p) if p.contains(selfPlayer) == false => false
+    }
+  }
+
   def coordinateSum(coordinateA: Coordinate, coordinateB: Coordinate): Coordinate = {
     val x = coordinateA.x.length + coordinateB.x.length
     val y = coordinateA.y.length + coordinateB.y.length
@@ -138,11 +190,33 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     Coordinate(intToAxisLenght(x), intToAxisLenght(y))
   }
 
-  def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
-    distances.map(coordinateSum(atPoint, _))
-      .filter(_.x.length <= 9)
-      .filter(_.y.length <= 9)
-      .sortBy(p => (p.x.length.abs + p.y.length.abs))
+  def maxCoordinateRange(atPoint: Coordinate): List[Coordinate] = {
+    val up = RelativeCoordinate(r_0, r_1)
+    val down = RelativeCoordinate(r_0, r__1)
+    val left = RelativeCoordinate(r__1, r_0)
+    val right = RelativeCoordinate(r_1, r_0)
+    val upLeft = RelativeCoordinate(r_1, r__1)
+    val upRight = RelativeCoordinate(r_1, r_1)
+    val downLeft = RelativeCoordinate(r__1, r__1)
+    val downRight = RelativeCoordinate(r__1, r_1)
+    (1 to 8).map(List(up, down, left, right, upLeft, upRight, downLeft, downRight)
+    def aroundSearch(i: Int, list: List[Coordinate]): List[Coordinate] = {
+      val result: List[Coordinate] = List(up, down, left, right, upLeft, upRight, downLeft, downRight).map { c =>
+        (1 to 8).map { i =>
+          Coordinate(intToAxisLenght(c.x.length + i), intToAxisLenght(c.x.length + i))
+        }.filter(c => c.x.length <= 9 || c.y.length <= 9)
+          .map(s => s)
+      }
+      def distance(int: Int, relativeCoordinate: RelativeCoordinate): Coordinate = {
+        val r = RelativeCoordinate(intToRelativeRange((relativeCoordinate.x.length * int) + atPoint.x.length), intToRelativeRange((relativeCoordinate.y.length * int) + atPoint.y.length))
+        1 match {
+          case s if isSelfPlayerPiece(s, coordinate) =>
+        }
+        distance(int + 1, r)
+      }
+    }
+    val nextIndex = i + 1
+    if (i <= 9) aroundSearch(nextIndex, result) else result
   }
 
   //  def maxCoordinateRange(distances: List[RelativeCoordinate], atPoint: Coordinate): List[Coordinate] = {
@@ -157,23 +231,18 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   //    }.sortBy(p => (p.x.abs + p.y.abs))
   //  }
 
-  def searchShortestDistanceFromAtPoint(coordinate: Coordinate, atPoint: Coordinate): Coordinate = {
-    val xDistance = coordinate.x.length - atPoint.x.length
-    val yDistance = coordinate.y.length - atPoint.y.length
-    Coordinate(intToAxisLenght(xDistance), intToAxisLenght(yDistance))
+  def searchShortestDistanceFromAtPoint(longestCoordinate: Coordinate, atPoint: Coordinate): Coordinate = {
+    val xDistance = longestCoordinate.x.length - atPoint.x.length
+    val yDistance = longestCoordinate.y.length - atPoint.y.length
+    val resultCoordinate = Coordinate(intToAxisLenght(xDistance), intToAxisLenght(yDistance))
+    coordinateSum(resultCoordinate, atPoint)
   }
 
-  //  def canMoveRange(pieceOfMoveRange: List[RelativeCoordinate], selfPlayer: Player, atPoint: Coordinate): List[Coordinate] = {
-  //    val up = RelativeCoordinate(0, 1)
-  //    val down = RelativeCoordinate(0, -1)
-  //    val left = RelativeCoordinate(-1, 0)
-  //    val right = RelativeCoordinate(1, 0)
-  //    val upLeft = RelativeCoordinate(1, -1)
-  //    val upRight = RelativeCoordinate(1, 1)
-  //    val downLeft = RelativeCoordinate(-1, -1)
-  //    val downRight = RelativeCoordinate(1, -1)
-  //    maxCoordinateRange(List(up, down, left, right, upLeft, upRight, downLeft, downRight), atPoint)
-  //      .filter(pieceOfMoveRange.contains(_))
-  //      .takeWhile(searchOpponentPieceOrFreeSpace(selfPlayer, _))
-  //  }
+  def canMoveRange(pieceOfMoveRange: List[RelativeCoordinate], selfPlayer: Player, atPoint: Coordinate): List[Coordinate] = {
+
+    maxCoordinateRange(atPoint)
+    maxCoordinateRange(List(up, down, left, right, upLeft, upRight, downLeft, downRight), atPoint)
+      .filter(pieceOfMoveRange.contains(_))
+      .takeWhile(searchShortestDistanceFromAtPoint(_, atPoint))
+  }
 }
