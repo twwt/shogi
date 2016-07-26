@@ -22,8 +22,11 @@ class BoardSpec extends FlatSpec with Matchers {
   val boardY2: Sized[List[Option[Map[Player, Piece]]], nat._9] =
     Sized[List](None, None, None, None, None, None, None, None, None)
 
+  val boardY3: Sized[List[Option[Map[Player, Piece]]], nat._9] =
+    Sized[List](None, None, space1, None, None, None, None, None, None)
+
   val boardState: Sized[List[Sized[List[Option[Map[Player, Piece]]], nat._9]], nat._9] =
-    Sized[List](boardY, boardY2, boardY2, boardY2, boardY2, boardY2, boardY2, boardY2, boardY2)
+    Sized[List](boardY, boardY2, boardY3, boardY2, boardY2, boardY2, boardY2, boardY2, boardY2)
   val board: Board = new Board(boardState)
   implicit val nowBoardState = board.boardState
 
@@ -53,7 +56,28 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   it should "moveRange" in {
-    board.moveRange(Kaku.moveRange, Coordinate(_5, _5))
+//    val result = board.moveRange(Kaku.moveRange, Coordinate(_5, _5), whitePlayer)
+//    result should equal(List(Coordinate(_1, _1), Coordinate(_3, _3), Coordinate(_4, _4), Coordinate(_5, _5), Coordinate(_6, _6), Coordinate(_7, _7), Coordinate(_8, _8), Coordinate(_9, _9)))
+    val result2 = board.moveRange(Hu.moveRange, Coordinate(_5, _5), whitePlayer)
+    result2 should equal(List(Coordinate(_5, _4)))
+  }
+
+  //  it should "coordinateToDirection" in {
+  //    val result = board.coordinateToDirection(Coordinate(_2,))
+  //    result should equal(List(Coordinate(_2, _2), Coordinate(_3, _3), Coordinate(_4, _4), Coordinate(_5, _5), Coordinate(_6, _6), Coordinate(_7, _7), Coordinate(_8, _8), Coordinate(_9, _9)))
+  //  }
+
+//  it should "move" in {
+//    val kakuMoveRange = board.moveRange(Kaku.moveRange, Coordinate(_2, _2), whitePlayer)
+//    board.directionMap(Coordinate(_2, _2), kakuMoveRange)
+//    kakuMoveRange should equal(List(Coordinate(_2, _2), Coordinate(_3, _3), Coordinate(_4, _4), Coordinate(_5, _5), Coordinate(_6, _6), Coordinate(_7, _7), Coordinate(_8, _8), Coordinate(_9, _9)))
+//    val result = kakuMoveRange.map(board.move(_, Coordinate(_1, _1), whitePlayer))
+//    result should equal(List(Coordinate(_2, _2)))
+//  }
+
+  it should "coordinateDistance" in {
+    board.coordinateDistance(Coordinate(_5, _5), Coordinate(_1, _1))
+    board.coordinateDistance(Coordinate(_9, _9), Coordinate(_1, _1))
   }
 
 }

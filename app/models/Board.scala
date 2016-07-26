@@ -1,5 +1,6 @@
 package models
 
+import org.scalacheck.Prop.True
 import shapeless._
 import syntax.sized._
 
@@ -33,7 +34,7 @@ case object _8 extends AxisLength(8)
 
 case object _9 extends AxisLength(9)
 
-sealed abstract class Direction(x: RelativeRange, y: RelativeRange)
+sealed abstract class Direction(val x: RelativeRange, val y: RelativeRange)
 
 case object Up extends Direction(r_0, r_1)
 
@@ -83,24 +84,98 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     int match {
       case 0 => r_0
       case 1 => r_1
-      case 2 => r_2
-      case 3 => r_3
-      case 4 => r_4
-      case 5 => r_5
-      case 6 => r_6
-      case 7 => r_7
+      //      case 2 => r_2
+      //      case 3 => r_3
+      //      case 4 => r_4
+      //      case 5 => r_5
+      //      case 6 => r_6
+      //      case 7 => r_7
       case 8 => r_8
-      case 9 => r_9
+      //      case 9 => r_9
       case -1 => r__1
-      case -2 => r__2
-      case -3 => r__3
-      case -4 => r__4
-      case -5 => r__5
-      case -6 => r__6
-      case -7 => r__7
+      //      case -2 => r__2
+      //      case -3 => r__3
+      //      case -4 => r__4
+      //      case -5 => r__5
+      //      case -6 => r__6
+      //      case -7 => r__7
       case -8 => r__8
-      case -9 => r__9
+      //      case -9 => r__9
     }
+  }
+
+  object upPlus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(c.length + 1)).toOption)
+  }
+
+  object downPlus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(c.length + -1)).toOption)
+  }
+
+  object leftPlus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(-1 + c.length)).toOption)
+  }
+
+  object rightPlus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(1 + c.length)).toOption)
+  }
+
+  val upPlus1All = everywhere(upPlus1)
+  val downPlus1All = everywhere(downPlus1)
+  val leftPlus1All = everywhere(leftPlus1)
+  val rightPlus1All = everywhere(rightPlus1)
+
+  def plus1(atPoint: Coordinate, direction: Direction) = {
+    direction match {
+      case Up => upPlus1All(atPoint)
+      case Down => downPlus1All(atPoint)
+      case Left => leftPlus1All(atPoint)
+      case Right => rightPlus1All(atPoint)
+      case UpLeft => upPlus1All(leftPlus1All(atPoint))
+      case UpRight => upPlus1All(rightPlus1All(atPoint))
+      case DownLeft => downPlus1All(leftPlus1All(atPoint))
+      case DownRight => downPlus1All(rightPlus1All(atPoint))
+    }
+  }
+
+  object upMinus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(c.length - 1)).toOption)
+  }
+
+  object downMinus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(c.length - -1)).toOption)
+  }
+
+  object leftMinus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(-1 - c.length)).toOption)
+  }
+
+  object rightMinus1 extends Poly1 {
+    implicit val caseAxisLength = at[AxisLength](c => Try(intToAxisLenght(1 - c.length)).toOption)
+  }
+
+  val upMinus1All = everywhere(upMinus1)
+  val downMinus1All = everywhere(downMinus1)
+  val leftMinus1All = everywhere(leftMinus1)
+  val rightMinus1All = everywhere(rightMinus1)
+
+  def minus1(atPoint: Coordinate, direction: Direction) = {
+    direction match {
+      case Up => upMinus1All(atPoint)
+      case Down => downMinus1All(atPoint)
+      case Left => leftMinus1All(atPoint)
+      case Right => rightMinus1All(atPoint)
+      case UpLeft => upMinus1All(leftMinus1All(atPoint))
+      case UpRight => upMinus1All(rightMinus1All(atPoint))
+      case DownLeft => downMinus1All(leftMinus1All(atPoint))
+      case DownRight => downMinus1All(rightMinus1All(atPoint))
+    }
+  }
+
+  def coordinateMinus(atPoint: Coordinate, direction: Direction) = {
+    val x = atPoint.x.length - direction.x.list.length
+    val y = atPoint.x.length - direction.x.list.length
+    Coordinate(intToAxisLenght(x), intToAxisLenght(y))
   }
 
   def findSpace(coordinate: Coordinate)(implicit boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map[Player, Piece]]], shapeless.nat._9]], shapeless.nat._9]): Option[Map[Player, Piece]] = {
@@ -168,26 +243,38 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     }
   }
 
-  def coordinateSum(coordinateA: Coordinate, coordinateB: Coordinate): Coordinate = {
+  def coordinateAdd(coordinateA: Coordinate, coordinateB: Coordinate): Coordinate = {
     val x = intToAxisLenght(coordinateA.x.length + coordinateB.x.length)
     val y = intToAxisLenght(coordinateA.y.length + coordinateB.y.length)
     Coordinate(x, y)
   }
 
-  def coordinateSum(coordinate: Coordinate, relativeCoordinate: RelativeCoordinate): Coordinate = {
-   val xTmp = coordinate.x.length + relativeCoordinate.x.length
-    val yTmp = coordinate.y.length + relativeCoordinate.y.length
+  def coordinateSub(coordinateA: Coordinate, coordinateB: Coordinate): Coordinate = {
+    val x = intToAxisLenght(coordinateA.x.length - coordinateB.x.length)
+    val y = intToAxisLenght(coordinateA.y.length - coordinateB.y.length)
+    Coordinate(x, y)
+  }
+
+  def coordinateSum(coordinate: Coordinate, relativeCoordinate: RelativeCoordinate): Option[Coordinate] = {
+    val xTmp = coordinate.x.length + relativeCoordinate.x.list.length
+    val yTmp = coordinate.y.length + relativeCoordinate.y.list.length
     val x = xTmp match {
-      case tmp if tmp <= 0 => 1
-      case tmp if 0 <= tmp && 9 <= tmp => 9
-      case tmp => tmp
+      case tmp if tmp <= 0 => None
+      case tmp if 0 <= tmp && 9 <= tmp => None
+      case tmp => Some(tmp)
     }
     val y = yTmp match {
-      case tmp if tmp <= 0 => 1
-      case tmp if 0 <= tmp && 9 <= tmp => 9
-      case tmp => tmp
+      case tmp if tmp <= 0 => None
+      case tmp if 0 <= tmp && 9 <= tmp => None
+      case tmp => Some(tmp)
     }
-    Coordinate(intToAxisLenght(x), intToAxisLenght(y))
+    if (x.isDefined || y.isDefined) Some(Coordinate(intToAxisLenght(x.get), intToAxisLenght(y.get))) else None
+  }
+
+  def coordinateDistance(coordinateA: Coordinate, coordinateB: Coordinate): Int = {
+    val result = (coordinateA.x.length - coordinateB.x.length) + (coordinateA.y.length - coordinateB.y.length)
+    println(result)
+    result
   }
 
   //  def xTimesCoordinate(coordinate: RelativeCoordinate, xTimes: Int) = {
@@ -237,17 +324,89 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   //    }.sortBy(p => (p.x.abs + p.y.abs))
   //  }
 
-  def moveRange(relativeCoordinates: List[RelativeCoordinate], atPoint: Coordinate, index: Int = 0): List[Coordinate] = {
-    relativeCoordinates.map(println)
-    val maxMoveRange = relativeCoordinates.map(coordinateSum(atPoint, _))
-    println(maxMoveRange)
-    maxMoveRange.flatMap { c =>
-      val x: List[AxisLength] = (if (atPoint.x.length < c.x.length) (atPoint.x.length to c.x.length) else (c.x.length to atPoint.x.length)).toList.map(i => intToAxisLenght(i))
-      val y: List[AxisLength] = (if (atPoint.y.length < c.y.length) (atPoint.y.length to c.y.length) else (c.y.length to atPoint.y.length)).toList.map(i => intToAxisLenght(i))
-      x.zip(y).map(a => Coordinate(a._1, a._2))
-    }.filter(_ != atPoint).filter(c => c.x.length <= 9 && c.y.length <= 9)
+  def coordinateToDirection(atPoint: Coordinate, afterMoveCoordinate: Coordinate) = {
+    val x = afterMoveCoordinate.x.length - atPoint.x.length
+    val y = afterMoveCoordinate.y.length - atPoint.y.length
+    val gap = (x, y)
+    gap match {
+      case c if c._1 == 0 && c._2 < 1 => Up
+      case c if c._1 == 0 && 0 < c._2 => Down
+      case c if c._1 < 0 && c._2 == 0 => Left
+      case c if 0 < c._1 && c._2 == 0 => Right
+      case c if c._1 < 0 && c._2 < 1 => UpLeft
+      case c if 0 < c._1 && c._2 < 1 => UpRight
+      case c if c._1 < 0 && 0 < c._2 => DownLeft
+      case c if 0 < c._1 && 0 < c._2 => DownRight
+    }
   }
 
+  def remove(num: Int, list: List[Int]) = list diff List(num)
+
+  def moveRange(relativeCoordinates: List[RelativeCoordinate], atPoint: Coordinate, selfPlayer: Player, index: Int = 0): List[Coordinate] = {
+    //    val maxMoveRange = relativeCoordinates.filter(_ != RelativeCoordinate(r_0, r_0)).map(coordinateSum(atPoint, _))
+    val xRange: List[List[Int]] = relativeCoordinates.map { c =>
+      val r: List[Int] = c.x.list.map(atPoint.x.length - _).sorted
+      if (r.contains(0)) ((r diff List(0)).reverse :+ (r.last + 1)) else r
+      //      (if (c.x.list.length < atPoint.x.length) {
+      //        ((atPoint.x.length + c.x.list.length) to atPoint.x.length).toList
+      //      } else {
+      //        (atPoint.x.length to atPoint.x.length + c.x.list.length).toList
+      //      }).sorted.map { c =>
+      //        if (c <= 0) c - 1 else c
+      //      }
+    }
+    val yRange: List[List[Int]] = relativeCoordinates.map { c =>
+      val r: List[Int] = c.y.list.map(atPoint.y.length - _).sorted
+      if (r.contains(0)) ((r diff List(0)).reverse :+ (r.last + 1)) else r
+      //      (if (c.y.list.length < atPoint.y.length) {
+      //        ((atPoint.y.length + c.y.list.length) to atPoint.y.length).toList
+      //      } else {
+      //        (atPoint.y.length to atPoint.y.length + c.y.list.length).toList
+      //      }).sorted.map { c =>
+      //        if (c <= 0) c - 1 else c
+      //      }
+    }
+
+    println(xRange)
+    println(yRange)
+    println(xRange.zip(yRange).map(r => r._1.zip(r._2).filter(c => c != (atPoint.x.length,atPoint.y.length)).filter(c => c._1 < 10 && c._2 < 10).filter(c => 0 < c._1 && 0 < c._2).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2)))))
+    xRange.zip(yRange).flatMap(r => r._1.zip(r._2).filter(c => c._1 != atPoint.x.length || c._1 != atPoint.y.length).filter(c => c._1 < 10 && c._2 < 10).filter(c => 0 < c._1 && 0 < c._2).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2))))
+    //    maxMoveRange.flatMap { c =>
+    //      println(s"${c.x.length - atPoint.x.length},${c.y.length - atPoint.y.length}")
+    //      val x: List[AxisLength] = (if (atPoint.x.length < c.x.length) (atPoint.x.length to c.x.length) else (c.x.length to atPoint.x.length)).toList.map(i => intToAxisLenght(i))
+    //      val y: List[AxisLength] = (if (atPoint.y.length < c.y.length) (atPoint.y.length to c.y.length) else (c.y.length to atPoint.y.length)).toList.map(i => intToAxisLenght(i))
+    //      x.zip(y).map(a => Coordinate(a._1, a._2))
+    //    }.filter(_ != atPoint).filter(c => c.x.length <= 9 && c.y.length <= 9).distinct
+  }
+
+  def move(afterMoveCoordinate: Coordinate, atPoint: Coordinate, selfPlayer: Player): Coordinate = {
+    val direction: Direction = coordinateToDirection(atPoint, afterMoveCoordinate)
+    val result = if (atPoint.x.length < afterMoveCoordinate.x.length || atPoint.y.length < afterMoveCoordinate.y.length) {
+      val space = findSpace(atPoint)(boardState)
+      space match {
+        case space if space.isDefined == false =>
+          move(afterMoveCoordinate, plus1(atPoint, direction), selfPlayer)
+        case space if space.isDefined == true =>
+          if (space.get.keys.head == selfPlayer) {
+            println(s"atPoint => $atPoint,direction => $direction,minus1 => ${minus1(atPoint, direction)}")
+            coordinateMinus(atPoint, direction)
+          } else {
+            atPoint
+          }
+      }
+    } else {
+      atPoint
+    }
+
+    result
+  }
+
+  def directionMap(atPoint: Coordinate, moveRange: List[Coordinate]): Map[Direction with Product with Serializable, List[Coordinate]] = {
+    moveRange.map(println)
+    val result = moveRange.groupBy(coordinateToDirection(atPoint, _))
+    println(result)
+    result
+  }
 
   //  def searchShortestDistanceFromAtPoint(longestCoordinate: Coordinate, atPoint: Coordinate): Coordinate = {
   //    val xDistance = intToNat(longestCoordinate.x.length - atPoint.x.length)
@@ -257,14 +416,14 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   //  }
 
   val isMoveDirection: PartialFunction[RelativeCoordinate, Boolean] = {
-    case c: RelativeCoordinate if c.x.length == 0 && c.y.length == 0 => false
+    case c: RelativeCoordinate if c.x.list.length == 0 && c.y.list.length == 0 => false
     case _ => true
   }
 
+
   //  def canMoveRange(piece: Piece, selfPlayer: Player, atPoint: Coordinate): List[Coordinate] = {
-  //
   //    val moveCoordinates: List[Coordinate] = moveRange(piece.moveRange.filter(isMoveDirection), atPoint)
-  //    moveCoordinates.map(findSpace(_)).map{
+  //    moveCoordinates.map(findSpace(_)).map {
   //      case space if space.isDefined == false =>
   //    }
   //  }
