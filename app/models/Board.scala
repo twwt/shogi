@@ -344,10 +344,10 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
 
   def moveRange(relativeCoordinates: List[RelativeCoordinate], atPoint: Coordinate, selfPlayer: Player, index: Int = 0): List[Coordinate] = {
     def createRange(xOrYList: RelativeRange, atPoint: AxisLength) = {
-      val r: List[Int] = xOrYList.list.map(atPoint.length - _).sorted
+      val r: List[Int] = xOrYList.list.map(atPoint.length - _).sorted.filter(i => i < 10 && 0 < i)
       if (r.contains(0)) ((r diff List(0)).reverse :+ (r.last + 1)) else r
     }
-    for {
+    (for {
       relativeCoordinate <- relativeCoordinates
       x = createRange(relativeCoordinate.x, atPoint.x)
       y = createRange(relativeCoordinate.y, atPoint.y)
@@ -357,7 +357,7 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
       xAndY <- x.zip(y)
     } yield {
       Coordinate(intToAxisLenght(xAndY._1), intToAxisLenght(xAndY._2))
-    }
+    }).filter(_ != atPoint).distinct
   }
 
   def move(afterMoveCoordinate: Coordinate, atPoint: Coordinate, selfPlayer: Player): Coordinate = {

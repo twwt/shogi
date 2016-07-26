@@ -56,10 +56,10 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   it should "moveRange" in {
-//    val result = board.moveRange(Kaku.moveRange, Coordinate(_5, _5), whitePlayer)
-//    result should equal(List(Coordinate(_1, _1), Coordinate(_3, _3), Coordinate(_4, _4), Coordinate(_5, _5), Coordinate(_6, _6), Coordinate(_7, _7), Coordinate(_8, _8), Coordinate(_9, _9)))
-    val result2 = board.moveRange(Hu.moveRange, Coordinate(_5, _5), whitePlayer)
-    result2 should equal(List(Coordinate(_5, _4)))
+    val result = board.moveRange(Kaku.moveRange, Coordinate(_5, _5), whitePlayer)
+    result should equal(List(Coordinate(_1, _1), Coordinate(_3, _3), Coordinate(_4, _4), Coordinate(_5, _5), Coordinate(_6, _6), Coordinate(_7, _7), Coordinate(_8, _8), Coordinate(_9, _9)))
+//    val result2 = board.moveRange(Hu.moveRange, Coordinate(_5, _5), whitePlayer)
+//    result2 should equal(List(Coordinate(_5, _4)))
   }
 
   //  it should "coordinateToDirection" in {
