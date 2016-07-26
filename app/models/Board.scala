@@ -343,40 +343,21 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
   def remove(num: Int, list: List[Int]) = list diff List(num)
 
   def moveRange(relativeCoordinates: List[RelativeCoordinate], atPoint: Coordinate, selfPlayer: Player, index: Int = 0): List[Coordinate] = {
-    //    val maxMoveRange = relativeCoordinates.filter(_ != RelativeCoordinate(r_0, r_0)).map(coordinateSum(atPoint, _))
-    val xRange: List[List[Int]] = relativeCoordinates.map { c =>
-      val r: List[Int] = c.x.list.map(atPoint.x.length - _).sorted
+    def createRange(xOrYList: RelativeRange, atPoint: AxisLength) = {
+      val r: List[Int] = xOrYList.list.map(atPoint.length - _).sorted
       if (r.contains(0)) ((r diff List(0)).reverse :+ (r.last + 1)) else r
-      //      (if (c.x.list.length < atPoint.x.length) {
-      //        ((atPoint.x.length + c.x.list.length) to atPoint.x.length).toList
-      //      } else {
-      //        (atPoint.x.length to atPoint.x.length + c.x.list.length).toList
-      //      }).sorted.map { c =>
-      //        if (c <= 0) c - 1 else c
-      //      }
     }
-    val yRange: List[List[Int]] = relativeCoordinates.map { c =>
-      val r: List[Int] = c.y.list.map(atPoint.y.length - _).sorted
-      if (r.contains(0)) ((r diff List(0)).reverse :+ (r.last + 1)) else r
-      //      (if (c.y.list.length < atPoint.y.length) {
-      //        ((atPoint.y.length + c.y.list.length) to atPoint.y.length).toList
-      //      } else {
-      //        (atPoint.y.length to atPoint.y.length + c.y.list.length).toList
-      //      }).sorted.map { c =>
-      //        if (c <= 0) c - 1 else c
-      //      }
+    for {
+      relativeCoordinate <- relativeCoordinates
+      x = createRange(relativeCoordinate.x, atPoint.x)
+      y = createRange(relativeCoordinate.y, atPoint.y)
+      if x != atPoint.x.length || y != atPoint.y.length
+      if x.length < 10 && y.length < 10
+      if 0 < x.length && 0 < y.length
+      xAndY <- x.zip(y)
+    } yield {
+      Coordinate(intToAxisLenght(xAndY._1), intToAxisLenght(xAndY._2))
     }
-
-    println(xRange)
-    println(yRange)
-    println(xRange.zip(yRange).map(r => r._1.zip(r._2).filter(c => c != (atPoint.x.length,atPoint.y.length)).filter(c => c._1 < 10 && c._2 < 10).filter(c => 0 < c._1 && 0 < c._2).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2)))))
-    xRange.zip(yRange).flatMap(r => r._1.zip(r._2).filter(c => c._1 != atPoint.x.length || c._1 != atPoint.y.length).filter(c => c._1 < 10 && c._2 < 10).filter(c => 0 < c._1 && 0 < c._2).map(c => Coordinate(intToAxisLenght(c._1), intToAxisLenght(c._2))))
-    //    maxMoveRange.flatMap { c =>
-    //      println(s"${c.x.length - atPoint.x.length},${c.y.length - atPoint.y.length}")
-    //      val x: List[AxisLength] = (if (atPoint.x.length < c.x.length) (atPoint.x.length to c.x.length) else (c.x.length to atPoint.x.length)).toList.map(i => intToAxisLenght(i))
-    //      val y: List[AxisLength] = (if (atPoint.y.length < c.y.length) (atPoint.y.length to c.y.length) else (c.y.length to atPoint.y.length)).toList.map(i => intToAxisLenght(i))
-    //      x.zip(y).map(a => Coordinate(a._1, a._2))
-    //    }.filter(_ != atPoint).filter(c => c.x.length <= 9 && c.y.length <= 9).distinct
   }
 
   def move(afterMoveCoordinate: Coordinate, atPoint: Coordinate, selfPlayer: Player): Coordinate = {
