@@ -1,7 +1,11 @@
 package models
 
 /** * Created by taishi on 7/19/16.  */
-case class Coordinate(x: AxisLength, y: AxisLength)
+case class Coordinate(x: AxisLength, y: AxisLength)  {
+  def plus1(direction: Direction, x: Coordinate, y: Coordinate): Coordinate
+
+  def minus1(direction: Direction, x: Coordinate, y: Coordinate): Coordinate
+}
 
 sealed abstract class AxisLength(val length: Int)
 
