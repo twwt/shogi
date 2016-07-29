@@ -360,6 +360,12 @@ class Board(val boardState: shapeless.Sized[List[shapeless.Sized[List[Option[Map
     }).filter(_ != atPoint).distinct
   }
 
+  def canMoveRange(selfPlayer: Player, atPoint: Coordinate, coordinates: List[Coordinate]): Map[Direction with Product with Serializable, List[Coordinate]] = {
+    directionMap(atPoint, coordinates).mapValues(_.map(findPiece(_,selfPlayer))).map(s =>s )
+
+
+  }
+
   def move(afterMoveCoordinate: Coordinate, atPoint: Coordinate, selfPlayer: Player): Coordinate = {
     val direction: Direction = coordinateToDirection(atPoint, afterMoveCoordinate)
     val result = if (atPoint.x.length < afterMoveCoordinate.x.length || atPoint.y.length < afterMoveCoordinate.y.length) {
