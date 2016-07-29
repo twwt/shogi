@@ -36,8 +36,7 @@ case object r__8 extends RelativeRange((-8 to -1).toList)
 
 case class RelativeRange(range: List[Int])
 
-
-
+case class Space(space: Option[Map[Player, Piece]])
 
 
 
