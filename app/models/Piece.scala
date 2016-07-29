@@ -3,55 +3,48 @@ package models
 /**
   * Created by taishi on 7/19/16.
   */
-sealed abstract class Piece(val moveRange: List[RelativeCoordinate])
 
-case object Ou extends Piece(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r__1), RelativeCoordinate(r__1, r_0), RelativeCoordinate(r_1, r_0), RelativeCoordinate(r__1, r_1), RelativeCoordinate(r_1, r_1), RelativeCoordinate(r__1, r__1), RelativeCoordinate(r_1, r_1)))
+sealed abstract class Direction(x: RelativeRange, y: RelativeRange)
 
-case object Hu extends Piece(List(RelativeCoordinate(r_0, r_1), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0)))
+case class Up(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
 
-case object Kaku extends Piece(List(RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r_0, r_0), RelativeCoordinate(r__8, r__8), RelativeCoordinate(r_8, r__8), RelativeCoordinate(r__8, r_8), RelativeCoordinate(r_8, r_8)))
+case class Down(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
 
-sealed abstract class RelativeRange(val list: List[Int])
+case class Left(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
+
+case class Right(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
+
+case class UpLeft(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
+
+case class UpRight(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
+
+case class DownLeft(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
+
+case class DownRight(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
+
+case class Around(up: Up, down: Down, left: Left, right: Right, upLeft: UpLeft, upRight: UpRight, downLeft: DownLeft, downRight: DownRight)
 
 case object r_0 extends RelativeRange(List(0))
 
 case object r_1 extends RelativeRange((1 to 1).toList)
 
-//
-//case object r_2 extends RelativeRange((1 to 2)
-//
-//case object r_3 extends RelativeRange((1 to 3)
-//
-//case object r_4 extends RelativeRange((1 to 4)
-//
-//case object r_5 extends RelativeRange((1 to 5)
-//
-//case object r_6 extends RelativeRange((1 to 6)
-//
-//case object r_7 extends RelativeRange((1 to 7)
-
 case object r_8 extends RelativeRange((1 to 8).toList)
-
-//case object r_9 extends RelativeRange((1 to 9)
 
 case object r__1 extends RelativeRange((-1 to -1).toList)
 
-//
-//case object r__2 extends RelativeRange(-2)
-//
-//case object r__3 extends RelativeRange(-3)
-//
-//case object r__4 extends RelativeRange(-4)
-//
-//case object r__5 extends RelativeRange(-5)
-//
-//case object r__6 extends RelativeRange(-6)
-//
-//case object r__7 extends RelativeRange(-7)
-
 case object r__8 extends RelativeRange((-8 to -1).toList)
 
-//case object r__9 extends RelativeRange(-9)
+case class RelativeRange(range: List[Int])
 
-case class RelativeCoordinate(x: RelativeRange, y: RelativeRange)
+
+
+
+
+
+
+
+
+
+
+
 
