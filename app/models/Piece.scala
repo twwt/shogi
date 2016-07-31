@@ -6,6 +6,14 @@ package models
 
 sealed abstract class Direction(x: RelativeRange, y: RelativeRange)
 
+object Direction {
+  def apply(x: RelativeRange, y: RelativeRange) = {
+    x match {
+      case r_0 if
+    }
+  }
+}
+
 case class Up(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
 
 case class Down(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
