@@ -1,4 +1,8 @@
-//package models
+package models
+
+import models.Direction._
+import shapeless.HNil
+
 //
 ///**
 //  * Created by taishi on 7/19/16.
@@ -72,13 +76,16 @@
 //
 //case class Space(space: Option[Map[Player, Piece]])
 //
-//sealed abstract class Piece(val moveRange: Around)
-//
-//case object Ou extends Piece(Around(Up(r_0, r_1), Down(r_0, r__1), Left(r__1, r_0), Right(r_1, r_0), UpLeft(r__1, r_1), UpRight(r_1, r_1), DownLeft(r__1, r__1), DownRight(r_1, r_1)))
+
+abstract class Piece(val moveRange: AroundMoveRange)
+
+case object Ou extends Piece(Up(Near) :: Down(Near) :: Left(Near) :: Right(Near) :: UpLeft(Near, Near) :: UpRight(Near, Near) :: DownLeft(Near, Near) :: DownRight(Near, Near) :: HNil)
+
 //
 //case object Hu extends Piece(Around(Up(r_0, r_1), Down(r_0, r_0), Left(r_0, r_0), Right(r_0, r_0), UpLeft(r_0, r_0), UpRight(r_0, r_0), DownLeft(r_0, r_0), DownRight(r_0, r_0)))
 //
 //case object Kaku extends Piece(Around(Up(r_0, r_0), Down(r_0, r_0), Left(r_0, r_0), Right(r_0, r_0), UpLeft(r__8, r__8), UpRight(r_8, r__8), DownLeft(r__8, r_8), DownRight(r_8, r_8)))
+//
 //
 //
 //

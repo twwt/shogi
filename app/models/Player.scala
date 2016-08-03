@@ -1,32 +1,25 @@
 package models
 
-import models.Player.PieceInHand
-
 /**
   * Created by taishi on 7/19/16.
   */
 
-sealed trait Player {
-  val pieceInHand: PieceInHand
+sealed class Player(newPieceInHand: List[Piece]) {
+  val pieceInHand: PieceInHand = genPieceInHand(newPieceInHand)
 
-//  def reversePlayer: Player
+  def genPieceInHand(pieceInHand: List[Piece]) = {
+    new PieceInHand(newPieceInHand)(this)
+  }
 
+  //  def reversePlayer: Player
+}
+
+case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
   def exists(piece: Piece): Boolean = {
-    pieceInHand(this).contains(piece)
+    pieceInHand.contains(piece)
   }
 }
 
-object Player {
-  type PieceInHand = Map[Player, List[Piece]]
-}
+case class Black(newPieceInHand:List[Piece]) extends Player(newPieceInHand)
 
-final class Black(newPieceInHand: PieceInHand) extends Player {
-  val pieceInHand = newPieceInHand
-//  def reversePlayer = new White
-}
-
-final class White(newPieceInHand: PieceInHand) extends Player {
-  val pieceInHand = newPieceInHand
-
-//  def reversePlayer = new Black
-}
+case class White(newPieceInHand:List[Piece]) extends Player(newPieceInHand)
