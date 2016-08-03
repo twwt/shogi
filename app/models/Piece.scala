@@ -4,15 +4,41 @@ package models
   * Created by taishi on 7/19/16.
   */
 
-sealed abstract class Direction(x: RelativeRange, y: RelativeRange)
+case class Direction(x: RelativeRange, y: RelativeRange) {
+  def apply(atPoint:Coordinate) = {
+  }
+}
 
 object Direction {
+  type Space = Option[Map[Player, Piece]]
+
   def apply(x: RelativeRange, y: RelativeRange) = {
     x match {
       case r_0 if
     }
   }
+
+  def go(count:Int,endCount:Option[Int],coordinates: List[Coordinate]) = {
+
+    endCount match {
+      case Some(endCount) if endCount == count => coordinate
+      case Some(endCount) if endCount != count =>
+
+        go(count + 1,Some(endCount + 1),)
+
+    }
+  }
 }
+
+case class Coordinate()
+
+case object r_0 extends RelativeRange(List(0))  
+case object r_1 extends RelativeRange((1 to 1).toList) 
+case object r_8 extends RelativeRange((1 to 8).toList)  
+case object r__1 extends RelativeRange((-1 to -1).toList)  
+case object r__8 extends RelativeRange((-8 to -1).toList) 
+
+
 
 case class Up(x: RelativeRange, y: RelativeRange) extends Direction(x, y)
 
