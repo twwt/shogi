@@ -7,8 +7,8 @@ import org.scalatest.{Matchers, FlatSpec}
 class PlayerSpec extends FlatSpec with Matchers {
   behavior of "Player"
 
-  val white = White
-  val black = Black
+  val white = new White(Map.empty[Player, Piece])
+  val black = new Black
 
   it should "isPieceInHand" in {
     val bool: Boolean = white.pieceInHand.exists(Ou)
