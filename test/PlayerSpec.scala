@@ -25,8 +25,8 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "addPiece" in {
     val coordinate = Coordinate(1, 1)
     val piece = Hu
-    val board: Board = white.addPiece(piece)(coordinate)(boardState)
-    val space: Space = board.boardState(coordinate.x)(coordinate.y)
-    space.get(white) should equal(Ou)
+    val game: Game = white.addPiece(piece)(coordinate)(boardState)
+    val space: Space = game.board.boardState(coordinate.x)(coordinate.y)
+    space.get(white) should equal(Hu)
   }
 }
