@@ -21,14 +21,11 @@ sealed class Player(newPieceInHand: List[Piece]) {
     val changeAfterSpaces: BoardState =
       boardState.map { xSpaces =>
         if (xSpaces._1 == addPieceCoordinate.x) {
-          (xSpaces._1 -> exchange(xSpaces._2)(addPieceCoordinate.y)(changeAfterSpace))
+          (xSpaces._1 -> Board.exchange(xSpaces._2)(addPieceCoordinate.y)(changeAfterSpace))
         } else xSpaces
       }
     Game(this, Board(changeAfterSpaces), newPieceInHand)
   }
-
-  def exchange[T](l: List[T])(n: Int)(exchange: T): List[T] =
-    l.zipWithIndex.map { case (v, i) => if (i == n) exchange else v }
 
   def subtractPieceInHand(piece: Piece): PieceInHand = {
     val removePieceInHand = pieceInHand.pieceInHand diff List(piece)
