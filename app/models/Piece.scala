@@ -81,6 +81,8 @@ abstract class Piece(val moveRange: AroundMoveRange)
 
 case object Ou extends Piece(Up(Near) :: Down(Near) :: Left(Near) :: Right(Near) :: UpLeft(Near, Near) :: UpRight(Near, Near) :: DownLeft(Near, Near) :: DownRight(Near, Near) :: HNil)
 
+case object Hu extends Piece(Up(Near) :: Down(CanNotMove) :: Left(CanNotMove) :: Right(CanNotMove) :: UpLeft(CanNotMove, CanNotMove) :: UpRight(CanNotMove, CanNotMove) :: DownLeft(CanNotMove, CanNotMove) :: DownRight(CanNotMove, CanNotMove) :: HNil)
+
 //
 //case object Hu extends Piece(Around(Up(r_0, r_1), Down(r_0, r_0), Left(r_0, r_0), Right(r_0, r_0), UpLeft(r_0, r_0), UpRight(r_0, r_0), DownLeft(r_0, r_0), DownRight(r_0, r_0)))
 //
