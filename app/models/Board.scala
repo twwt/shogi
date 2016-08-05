@@ -8,7 +8,7 @@ case class Coordinate(x: Int, y: Int)
 
 case class Board(val boardState: BoardState) {
 
-  def changeBoard(coordinateA: Coordinate)(coordinateB: Coordinate)(player: Player): BoardState = {
+  def changeBoard(spaceA: Space)(spaceB: Space)(player: Player): BoardState = {
     val spaceB: Space = boardState(coordinateB.x)(coordinateB.y)
     boardState.mapValues(exchange(_)(coordinateA.y)(spaceB))
   }
@@ -24,6 +24,12 @@ case class Board(val boardState: BoardState) {
   def findSpace(coordinate: Coordinate): Space = {
     boardState(coordinate.x)(coordinate.y)
   }
+
+  def findCoordinate(space: Space) = {
+    boardState.map
+  }
+}
+
 }
 
 object Board {
@@ -34,4 +40,8 @@ object Board {
 
   def exchange[T](l: List[T])(n: Int)(exchange: T): List[T] =
     l.zipWithIndex.map { case (v, i) => if (i == n) exchange else v }
+
+  def searchSpaceIndex(l: List[Space])(space: Space): Option[Int] =
+    l.zipWithIndex.dropWhile(_._1 != space).map(_._2).headOption
+
 }
