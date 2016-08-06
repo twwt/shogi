@@ -7,9 +7,9 @@ case class Coordinate(x: Int, y: Int)
 
 case class Board(val boardState: BoardState) {
 
-  def changeBoard(spaceA: Space)(spaceB: Space)(player: Player): BoardState = {
+  def changeBoard(spaceA: Space)(spaceB: Space): BoardState = {
     val spaceACoordinate = findCoordinate(spaceB)
-    (for {
+    val result = (for {
       x <- boardState
       xIndex = x._1
       y <- x._2
@@ -17,6 +17,7 @@ case class Board(val boardState: BoardState) {
     } yield {
       other ++ Map(xIndex -> exchange(x._2)(spaceACoordinate.y)(spaceB))
     }).head
+    result
   }
 
   def isMoveCoordinate(coordinateA: Coordinate)(coordinateB: Coordinate)(player: Player): Boolean = {
@@ -32,12 +33,13 @@ case class Board(val boardState: BoardState) {
 
   def findCoordinate(space: Space): Coordinate = {
     (for {
-      x <- boardState.zipWithIndex
-      y = x._1._2
-      yIndex = y.indexOf(space)
-      if y.contains(space)
-      xIndex = x._2
+      x <- boardState
+      xIndex = x._1
+      yIndex = x._2.indexOf(space)
+      if yIndex != -1
     } yield {
+      println(Coordinate(xIndex, yIndex))
+      println(boardState(xIndex)(yIndex))
       Coordinate(xIndex, yIndex)
     }).head
   }

@@ -77,7 +77,11 @@ import shapeless.HNil
 //case class Space(space: Option[Map[Player, Piece]])
 //
 
-abstract class Piece(val moveRange: AroundMoveRange)
+sealed class Piece(val moveRange: AroundMoveRange) {
+//  def searchMoveRange(board: Board)(piece: Piece)(coordinate: Coordinate): Option[AroundMoveRange] = {
+//    board.isMoveCoordinate(coordinate)
+//  }
+}
 
 case object Ou extends Piece(Up(Near) :: Down(Near) :: Left(Near) :: Right(Near) :: UpLeft(Near, Near) :: UpRight(Near, Near) :: DownLeft(Near, Near) :: DownRight(Near, Near) :: HNil)
 

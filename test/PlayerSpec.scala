@@ -29,11 +29,11 @@ class PlayerSpec extends FlatSpec with Matchers {
     val space: Space = game.board.boardState(coordinate.x)(coordinate.y)
     space.get(white) should equal(Hu)
   }
-  it should "movePiece" in {
-    val moveBeforeCoordinate = Coordinate(1, 1)
-    val moveAfterCoordinate = Coordinate(2, 2)
-    val piece = Hu
-    val game: Option[Game] = white.movePiece(moveBeforeCoordinate)(moveAfterCoordinate)(Hu)
-    game.isDefined should equal(true)
-  }
+//  it should "movePiece" in {
+//    val moveBeforeCoordinate = Coordinate(1, 1)
+//    val moveAfterCoordinate = Coordinate(2, 2)
+//    val piece = Hu
+//    val game: Option[Game] = white.movePiece(moveBeforeCoordinate)(moveAfterCoordinate)(Hu)
+//    game.isDefined should equal(true)
+//  }
 }

@@ -20,12 +20,20 @@ class BoardSpec extends FlatSpec with Matchers {
     , None, None, None, None, None, None, None, None)
   val boardState: BoardState = Map(-4 -> y, -3 -> yNone, -2 -> yNone, -1 -> yNone, 0 -> yNone, 1 -> yNone, 2 -> yNone, 3 -> yNone, 4 -> yNone)
   val board = Board(boardState)
+  val spaceB: Space = Some(Map(black -> Hu))
 
   behavior of "Board"
 
-  //中置演算子+を定義
+  it should "findCoordinate" in {
+    val newCoordinate: Coordinate = board.findCoordinate(ouSpace)
+    newCoordinate should equal(Coordinate(-4, 0))
+  }
+
   it should "changeBoard" in {
-    board.changeBoard()
+    val newState: BoardState = board.changeBoard(ouSpace)(spaceB)
+    val spaceBCoordinate: Coordinate = board.findCoordinate(spaceB)
+    val result: Space = newState(spaceBCoordinate.x)(spaceBCoordinate.y)
+    result should equal(ouSpace)
   }
 
 
