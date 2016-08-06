@@ -12,14 +12,15 @@ case class Board(val board: BoardState) {
   def changeBoard(moveCoordinate: Coordinate)(space: Space): BoardState = {
     board.map {
       case (xIndex, y) if xIndex == moveCoordinate.x => (xIndex, exchange(y)(moveCoordinate.y)(space))
-      case (xIndex, y) if xIndex != moveCoordinate.x => (xIndex, y)
+      case (xIndex, y) => (xIndex, y)
     }
   }
 
-  def isMoveCoordinate(coordinateA: Coordinate)(coordinateB: Coordinate)(player: Player): Boolean = {
+  def isMoveCoordinate(coordinateA: Coordinate)(coordinateB: Coordinate)(selfPlayer: Player): Option[Player] = {
     findSpace(coordinateB) match {
-      case Some(space) => space.contains(player)
-      case None => true
+      case Some(space) if space.isDefinedAt(selfPlayer) => Some(selfPlayer)
+      case Some(space) if !space.isDefinedAt(selfPlayer) => Some(selfPlayer.reversePlayer)
+      case None => None
     }
   }
 

@@ -36,7 +36,7 @@ sealed class Player(newPieceInHand: List[Piece]) {
     PieceInHand(removePieceInHand)(this)
   }
 
-  //  def reversePlayer: Player
+  val reversePlayer: Player
 }
 
 case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
@@ -45,6 +45,10 @@ case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
   }
 }
 
-case class Black(newPieceInHand: List[Piece]) extends Player(newPieceInHand)
+case class Black(newPieceInHand: List[Piece]) extends Player(newPieceInHand) {
+  val reversePlayer = White
+}
 
-case class White(newPieceInHand: List[Piece]) extends Player(newPieceInHand)
+case class White(newPieceInHand: List[Piece]) extends Player(newPieceInHand) {
+  val reversePlayer = Black
+}
