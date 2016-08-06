@@ -1,24 +1,27 @@
 package models
 
 import models.Board._
+import scalaz._
+import Scalaz._
 
 /** * Created by taishi on 7/19/16.  */
 case class Coordinate(x: Int, y: Int)
 
 case class Board(val boardState: BoardState) {
 
-  def changeBoard(spaceA: Space)(spaceB: Space): BoardState = {
-    val spaceACoordinate = findCoordinate(spaceB)
-    val result = (for {
-      x <- boardState
-      xIndex = x._1
-      y <- x._2
-      other = Map(xIndex -> x._2)
-    } yield {
-      other ++ Map(xIndex -> exchange(x._2)(spaceACoordinate.y)(spaceB))
-    }).head
-    result
-  }
+  //  def changeBoard(spaceA: Space)(spaceB: Space): BoardState = {
+  //    val spaceACoordinate = findCoordinate(spaceB)
+  //    val result = (for {
+  //      x <- boardState
+  //      xIndex = x._1
+  //      y <- x._2
+  //      other = Map(xIndex -> x._2)
+  //    } yield {
+  //      println(other ++ Map(xIndex -> exchange(x._2)(spaceACoordinate.y)(spaceB)))
+  //      other ++ Map(xIndex -> exchange(x._2)(spaceACoordinate.y)(spaceB))
+  //    }).head
+  //    result
+  //  }
 
   def isMoveCoordinate(coordinateA: Coordinate)(coordinateB: Coordinate)(player: Player): Boolean = {
     findSpace(coordinateB) match {
@@ -31,17 +34,15 @@ case class Board(val boardState: BoardState) {
     boardState(coordinate.x)(coordinate.y)
   }
 
-  def findCoordinate(space: Space): Coordinate = {
+  def findCoordinate(space: Space): Option[Coordinate] = {
     (for {
       x <- boardState
       xIndex = x._1
       yIndex = x._2.indexOf(space)
       if yIndex != -1
     } yield {
-      println(Coordinate(xIndex, yIndex))
-      println(boardState(xIndex)(yIndex))
       Coordinate(xIndex, yIndex)
-    }).head
+    }).toList.headOption
   }
 }
 
