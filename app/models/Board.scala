@@ -1,6 +1,5 @@
 package models
 
-import shapeless._
 import models.Board._
 
 /** * Created by taishi on 7/19/16.  */
@@ -9,14 +8,20 @@ case class Coordinate(x: Int, y: Int)
 case class Board(val boardState: BoardState) {
 
   def changeBoard(spaceA: Space)(spaceB: Space)(player: Player): BoardState = {
-    val spaceB: Space = boardState(coordinateB.x)(coordinateB.y)
-    boardState.mapValues(exchange(_)(coordinateA.y)(spaceB))
+    val spaceACoordinate = findCoordinate(spaceB)
+    (for {
+      x <- boardState
+      xIndex = x._1
+      y <- x._2
+      other = Map(xIndex -> x._2)
+    } yield {
+      other ++ Map(xIndex -> exchange(x._2)(spaceACoordinate.y)(spaceB))
+    }).head
   }
 
   def isMoveCoordinate(coordinateA: Coordinate)(coordinateB: Coordinate)(player: Player): Boolean = {
     findSpace(coordinateB) match {
-      case Some(space) if space.contains(player) == true => false
-      case Some(space) if space.contains(player) == false => true
+      case Some(space) => space.contains(player)
       case None => true
     }
   }
@@ -25,11 +30,17 @@ case class Board(val boardState: BoardState) {
     boardState(coordinate.x)(coordinate.y)
   }
 
-  def findCoordinate(space: Space) = {
-    boardState.map
+  def findCoordinate(space: Space): Coordinate = {
+    (for {
+      x <- boardState.zipWithIndex
+      y = x._1._2
+      yIndex = y.indexOf(space)
+      if y.contains(space)
+      xIndex = x._2
+    } yield {
+      Coordinate(xIndex, yIndex)
+    }).head
   }
-}
-
 }
 
 object Board {
