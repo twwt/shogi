@@ -19,8 +19,17 @@ case class BoardState(state: Map[Int, Y])
 case class Board(val board: BoardState) {
 
   def changeBoard(moveCoordinate: Coordinate)(space: Space): BoardState = {
+    val value: List[Space] = (for {
+      (xIndex, y) <- board.state
+      s <- y.y
+    } yield {
+      if (space == s) space else s
+    }).toList
+
+    val newBoard = board.copy(board = board.state.mapValues(y => exchange(y.y)(moveCoordinate.y)(space)))
     board.state.map {
-      case (xIndex, y) if xIndex == moveCoordinate.x => (xIndex, exchange(y)(moveCoordinate.y)(space))
+      case (xIndex, y) if xIndex == moveCoordinate.x =>
+        (xIndex, exchange(y.y)(moveCoordinate.y)(space))
       case (xIndex, y) => (xIndex, y)
     }
   }
@@ -49,6 +58,7 @@ case class Board(val board: BoardState) {
 }
 
 object Board {
+
   def exchange[T](l: List[T])(n: Int)(exchange: T): List[T] =
     l.zipWithIndex.map { case (v, i) => if (i == n) exchange else v }
 
