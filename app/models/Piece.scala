@@ -1,7 +1,9 @@
 package models
 
 import models.Direction._
-import shapeless.HNil
+import shapeless._
+import shapeless.ops.hlist.Mapper.Aux
+import shapeless.{Sized, HNil}
 
 //
 ///**
@@ -77,15 +79,16 @@ import shapeless.HNil
 //case class Space(space: Option[Map[Player, Piece]])
 //
 
-sealed class Piece(val moveRange: AroundMoveRange) {
-//  def searchMoveRange(board: Board)(piece: Piece)(coordinate: Coordinate): Option[AroundMoveRange] = {
-//    board.isMoveCoordinate(coordinate)
-//  }
+case class Piece(val moveRange: AroundMoveRange) {
+  //  def searchMoveRange = {
+  //    val plus1All = everywhere(plus1)
+  //    println(plus1All(moveRange))
+  //  }
 }
 
-case object Ou extends Piece(Up(Near) :: Down(Near) :: Left(Near) :: Right(Near) :: UpLeft(Near, Near) :: UpRight(Near, Near) :: DownLeft(Near, Near) :: DownRight(Near, Near) :: HNil)
+object Ou extends Piece(Up(Near) :: Down(Near) :: Left(Near) :: Right(Near) :: UpLeft(Near, Near) :: UpRight(Near, Near) :: DownLeft(Near, Near) :: DownRight(Near, Near) :: HNil)
 
-case object Hu extends Piece(Up(Near) :: Down(CanNotMove) :: Left(CanNotMove) :: Right(CanNotMove) :: UpLeft(CanNotMove, CanNotMove) :: UpRight(CanNotMove, CanNotMove) :: DownLeft(CanNotMove, CanNotMove) :: DownRight(CanNotMove, CanNotMove) :: HNil)
+object Hu extends Piece(Up(Near) :: Down(CanNotMove) :: Left(CanNotMove) :: Right(CanNotMove) :: UpLeft(CanNotMove, CanNotMove) :: UpRight(CanNotMove, CanNotMove) :: DownLeft(CanNotMove, CanNotMove) :: DownRight(CanNotMove, CanNotMove) :: HNil)
 
 //
 //case object Hu extends Piece(Around(Up(r_0, r_1), Down(r_0, r_0), Left(r_0, r_0), Right(r_0, r_0), UpLeft(r_0, r_0), UpRight(r_0, r_0), DownLeft(r_0, r_0), DownRight(r_0, r_0)))

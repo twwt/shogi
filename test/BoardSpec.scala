@@ -7,11 +7,6 @@ import models._
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import scalaz._
-import Scalaz._
-import shapeless._
-import shapeless.Sized
-
-import scalaz.\/
 
 class BoardSpec extends FlatSpec with Matchers {
 
@@ -35,18 +30,18 @@ class BoardSpec extends FlatSpec with Matchers {
       case None => println(-1)
     }
     val newCoordinate2: Option[Coordinate] = board.findCoordinate(ouSpace)
-    newCoordinate match {
+    newCoordinate2 match {
       case Some(c) => c should equal(Coordinate(-4, 0))
       case None => println(-1)
     }
   }
 
-  //  it should "changeBoard" in {
-  //    val newState: BoardState = board.changeBoard(ouSpace)(spaceB)
-  //    val spaceBCoordinate: Coordinate = board.findCoordinate(spaceB)
-  //    val result: Space = newState(spaceBCoordinate.x)(spaceBCoordinate.y)
-  //    result should equal(ouSpace)
-  //  }
+  it should "changeBoard" in {
+    val newState: BoardState = board.changeBoard(Coordinate(-4, 0))(spaceB)
+    newState(-4)(0) should equal(spaceB)
+    val newState2: BoardState = board.changeBoard(Coordinate(-3, 0))(spaceB)
+    newState2(-3)(0) should equal(spaceB)
+  }
 
 
 }
