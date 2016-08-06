@@ -11,6 +11,10 @@ import models.Board.Space
 sealed class Player(newPieceInHand: List[Piece]) {
   val pieceInHand: PieceInHand = genPieceInHand(newPieceInHand)
 
+  def movePiece(beforeCoordinate: Coordinate)(afterCoordinate: Coordinate)(piece: Piece) = {
+    
+  }
+
   def genPieceInHand(pieceInHand: List[Piece]) = {
     new PieceInHand(newPieceInHand)(this)
   }
