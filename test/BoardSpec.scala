@@ -14,9 +14,8 @@ class BoardSpec extends FlatSpec with Matchers {
   val black = Black(Nil)
 
   val ouSpace: Space = Some(Map(white -> Ou))
-  val y: Y = List(ouSpace, None, None, None, None, None, None, None, None)
-  val yNone: Y = List(None
-    , None, None, None, None, None, None, None, None)
+  val y: Y = Map(-4 -> ouSpace, -3 -> None, -2 -> None, -1 -> None, 0 -> None, 1 -> None, 2 -> None, 3 -> None, 4 -> None)
+  val yNone: Y = Map(-4 -> None, -3 -> None, -2 -> None, -1 -> None, 0 -> None, 1 -> None, 2 -> None, 3 -> None, 4 -> None)
   val boardState: BoardState = Map(-4 -> y, -3 -> yNone, -2 -> yNone, -1 -> yNone, 0 -> yNone, 1 -> yNone, 2 -> yNone, 3 -> yNone, 4 -> yNone)
   val board = Board(boardState)
   val spaceB: Space = Some(Map(black -> Hu))

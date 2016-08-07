@@ -13,8 +13,12 @@ sealed class Player(newPieceInHand: List[Piece]) {
 
   val pieceInHand: PieceInHand = genPieceInHand(newPieceInHand)
 
-  def movePiece(board: Board)(beforeCoordinate: Coordinate)(afterCoordinate: Coordinate)(piece: Piece): List[IndexedSeq[Space]] = {
-    board.move(this, beforeCoordinate, piece)
+  def movePiece(board: Board)(beforeCoordinate: Coordinate)(afterCoordinate: Coordinate)(piece: Piece): Option[Game] = {
+    val canMoveRange: List[Space] = board.canMoveRange(this, beforeCoordinate, piece)
+    if (canMoveRange.contains(afterCoordinate)) {
+      val newBoard = new Board(board.changeBoard(afterCoordinate)(Some(Map(this -> piece))))
+      Some(new Game(this, newBoard, pieceInHand))
+    } else None
   }
 
   val pf: Space --> Boolean = {
@@ -30,12 +34,10 @@ sealed class Player(newPieceInHand: List[Piece]) {
   def addPiece(piece: Piece)(addPieceCoordinate: Coordinate)(boardState: BoardState): Game = {
     val newPieceInHand = subtractPieceInHand(piece)
     val changeAfterSpace: Space = Some(Map(this -> piece))
-    val changeAfterSpaces: BoardState =
-      boardState.map { xSpaces =>
-        if (xSpaces._1 == addPieceCoordinate.x) {
-          (xSpaces._1 -> Board.exchange(xSpaces._2)(addPieceCoordinate.y)(changeAfterSpace))
-        } else xSpaces
-      }
+    val changeAfterSpaces: BoardState = boardState.mapValues(_.map {
+      case (yIndex, ySpace) if yIndex == addPieceCoordinate.y => (yIndex -> changeAfterSpace)
+      case (yIndex, ySpace) => (yIndex -> ySpace)
+    })
     Game(this, Board(changeAfterSpaces), newPieceInHand)
   }
 

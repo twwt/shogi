@@ -1,6 +1,9 @@
 package models
 
 import models.Board._
+import scala.util.Try
+import scalaz._
+import Scalaz._
 
 /** * Created by taishi on 7/19/16.  */
 case class Coordinate(x: Int, y: Int) {
@@ -11,18 +14,16 @@ case class Coordinate(x: Int, y: Int) {
 
 case class Board(val board: BoardState) {
 
-  def changeBoard(moveCoordinate: Coordinate)(space: Space): BoardState = {
-    board.map {
-      case (xIndex, y) if xIndex == moveCoordinate.x =>
-        (xIndex, Map(moveCoordinate.y -> exchange(y(moveCoordinate.y))(moveCoordinate.y)(space)))
-      case (xIndex, y) => (xIndex, y)
-    }
-  }
+  def changeBoard(moveCoordinate: Coordinate)(newSpace: Space): BoardState =
+    board.mapValues(_.map {
+      case (yIndex, ySpace) if yIndex == moveCoordinate.y => (yIndex -> newSpace)
+      case (yIndex, ySpace) => (yIndex -> ySpace)
+    })
 
   def isMoveCoordinate(coordinateA: Coordinate)(coordinateB: Coordinate)(selfPlayer: Player): Option[Player] = {
     findSpace(coordinateB) match {
-      case Some(space) if space.isDefinedAt(selfPlayer) => Some(selfPlayer)
-      case Some(space) if !space.isDefinedAt(selfPlayer) => Some(selfPlayer.reversePlayer)
+      case Some(space) if space.contains(selfPlayer) => Some(selfPlayer)
+      case Some(space) if !space.contains(selfPlayer) => Some(selfPlayer.reversePlayer)
       case None => None
     }
   }
@@ -30,7 +31,7 @@ case class Board(val board: BoardState) {
   def shortestRange(range: IndexedSeq[Coordinate])(player: Player): IndexedSeq[Space] = {
     val spaces: IndexedSeq[Space] = range.map(findSpace)
     def loop(n: Int): Int = {
-      spaces(n) match {
+      spaces.toList index(n) match {
         case Some(space) if space.contains(player) => n - 1
         case Some(space) if !space.contains(player) => n
         case _ => loop(n + 1)
@@ -39,16 +40,15 @@ case class Board(val board: BoardState) {
     spaces.take(loop(0))
   }
 
-  def move(player: Player, moveBeforeCoordinate: Coordinate, piece: Piece): List[IndexedSeq[Space]] = {
-    val result = for {
+  def canMoveRange(player: Player, moveBeforeCoordinate: Coordinate, piece: Piece): List[Space] = {
+    val result: List[Space] = for {
       direction <- piece.aroundMoveRange
       l = direction.xx.size.zip(direction.yy.size)
-      cList = l.map(a => Coordinate(a._1, a._2))
+      moveRange = l.map(a => Coordinate(a._1, a._2)).map(_ + moveBeforeCoordinate)
+      l <- shortestRange(moveRange)(player)
     } yield {
-      val moveRange = cList.map(_ + moveBeforeCoordinate)
-      shortestRange(moveRange)(player)
+      l
     }
-    result.map(println)
     result
   }
 
@@ -65,11 +65,9 @@ case class Board(val board: BoardState) {
   //  }
 
 
-  def findSpace(coordinate: Coordinate): Space = {
-    println(board)
-    println(coordinate)
-    println(board(0))
-    board(coordinate.x)(coordinate.y)
+  def findSpace(coordinate: Coordinate): Space = coordinate match {
+    case c if (c.x < 9 || c.y < 9) =>
+      board(coordinate.x)(coordinate.y)
   }
 
   def findCoordinate(space: Space): Option[Coordinate] = {
@@ -78,9 +76,9 @@ case class Board(val board: BoardState) {
       xIndex = x._1
       y = x._2
       yMap <- y
+      if yMap._2 == space
     } yield {
-      val yIndex: Int = yMap._2.indexOf(space)
-      Coordinate(xIndex, yIndex)
+      Coordinate(xIndex, yMap._1)
     }).toList.headOption
   }
 }
@@ -88,7 +86,7 @@ case class Board(val board: BoardState) {
 object Board {
   type Space = Option[Map[Player, Piece]]
   type X = Map[Int, Y]
-  type Y = Map[Int, List[Space]]
+  type Y = Map[Int, Space]
   type BoardState = Map[Int, Y]
 
   def exchange[T](l: List[T])(n: Int)(exchange: T): List[T] =
