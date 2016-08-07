@@ -15,6 +15,8 @@ sealed class Player(newPieceInHand: List[Piece]) {
 
   def movePiece(board: Board)(beforeCoordinate: Coordinate)(afterCoordinate: Coordinate)(piece: Piece): Option[Game] = {
     val canMoveRange: List[Space] = board.canMoveRange(this, beforeCoordinate, piece)
+    println(canMoveRange)
+    println(afterCoordinate)
     if (canMoveRange.contains(afterCoordinate)) {
       val newBoard = new Board(board.changeBoard(afterCoordinate)(Some(Map(this -> piece))))
       Some(new Game(this, newBoard, pieceInHand))

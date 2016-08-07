@@ -45,10 +45,11 @@ case class Board(val board: BoardState) {
       direction <- piece.aroundMoveRange
       l = direction.xx.size.zip(direction.yy.size)
       moveRange = l.map(a => Coordinate(a._1, a._2)).map(_ + moveBeforeCoordinate)
-      l <- shortestRange(moveRange)(player)
+      r <- shortestRange(moveRange)(player)
     } yield {
-      l
+      r
     }
+    println(result)
     result
   }
 

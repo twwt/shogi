@@ -4,8 +4,7 @@
 
 import models.Board._
 import models._
-import org.scalatest.FlatSpec
-import org.scalatest.Matchers
+import org.scalatest.{Spec, ShouldMatchers, FlatSpec, Matchers}
 import scalaz._
 
 class BoardSpec extends FlatSpec with Matchers {
@@ -21,6 +20,12 @@ class BoardSpec extends FlatSpec with Matchers {
   val spaceB: Space = Some(Map(black -> Hu))
 
   behavior of "Board"
+
+  it should "canMoveRange" in {
+    val spaces = board.canMoveRange(white, Coordinate(0, 0), Hu)
+  }
+
+
 
   it should "findCoordinate" in {
     val newCoordinate: Option[Coordinate] = board.findCoordinate(spaceB)
@@ -41,6 +46,5 @@ class BoardSpec extends FlatSpec with Matchers {
     val newState2: BoardState = board.changeBoard(Coordinate(-3, 0))(spaceB)
     newState2(-3)(0) should equal(spaceB)
   }
-
 
 }
