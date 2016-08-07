@@ -26,10 +26,12 @@ class PlayerSpec extends FlatSpec with Matchers {
     val coordinate = Coordinate(1, 1)
     val piece = Hu
     val game: Game = white.addPiece(piece)(coordinate)(boardState)
-    val space: Space = game.board.boardState(coordinate.x)(coordinate.y)
+    val space: Space = game.board.board(coordinate.x)(coordinate.y)
     space.get(white) should equal(Hu)
   }
   it should "movePiece" in {
+    board.move(white,Coordinate(0,0),Ou)
+
 //    val moveBeforeCoordinate = Coordinate(1, 1)
 //    val moveAfterCoordinate = Coordinate(2, 2)
 //    val piece = Hu

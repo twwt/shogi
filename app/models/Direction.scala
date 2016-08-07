@@ -6,7 +6,7 @@ import shapeless._
   * Created by taishi on 8/4/16.
   */
 object Direction {
-  type AroundMoveRange = Up :: Down :: Left :: Right :: UpLeft :: UpRight :: DownLeft :: DownRight :: HNil
+  type AroundMoveRange = List[MoveRange]
 }
 
 abstract class Distance(val size: IndexedSeq[Int])
@@ -17,23 +17,24 @@ case object Near extends Distance(-1 to 1)
 
 case object CanNotMove extends Distance(IndexedSeq(0))
 
-sealed trait MoveRange
+sealed class MoveRange(val xx: Distance = CanNotMove, val yy: Distance = CanNotMove)
 
-case class Up(y: Distance) extends MoveRange
+case class Up(y: Distance) extends MoveRange(yy = y)
 
-case class Down(y: Distance) extends MoveRange
+case class Down(y: Distance) extends MoveRange(yy = y)
 
-case class Left(y: Distance) extends MoveRange
+case class Left(x: Distance) extends MoveRange(xx = x)
 
-case class Right(y: Distance) extends MoveRange
+case class Right(x: Distance) extends MoveRange(xx = x)
 
-case class UpLeft(x: Distance, y: Distance) extends MoveRange
+case class UpLeft(x: Distance, y: Distance) extends MoveRange(x, y)
 
-case class UpRight(x: Distance, y: Distance) extends MoveRange
+case class UpRight(x: Distance, y: Distance) extends MoveRange(x, y)
 
-case class DownLeft(x: Distance, y: Distance) extends MoveRange
+case class DownLeft(x: Distance, y: Distance) extends MoveRange(x, y)
 
-case class DownRight(x: Distance, y: Distance) extends MoveRange
+case class DownRight(x: Distance, y: Distance) extends MoveRange(x, y)
+
 
 //object Direction {
 //  type AroundMoveRange = Up[_] :: Down[_] :: Left[_] :: Right[_] :: UpLeft[_] :: UpRight[_] :: DownLeft[_] :: DownRight[_] :: HNil

@@ -9,10 +9,18 @@ import models.Board.Space
   */
 
 sealed class Player(newPieceInHand: List[Piece]) {
+  type -->[A, B] = PartialFunction[A, B]
+
   val pieceInHand: PieceInHand = genPieceInHand(newPieceInHand)
 
-  def movePiece(beforeCoordinate: Coordinate)(afterCoordinate: Coordinate)(piece: Piece) = {
+  def movePiece(board: Board)(beforeCoordinate: Coordinate)(afterCoordinate: Coordinate)(piece: Piece): List[IndexedSeq[Space]] = {
+    board.move(this, beforeCoordinate, piece)
+  }
 
+  val pf: Space --> Boolean = {
+    case Some(s) if s.contains(this) => false
+    case Some(s) if !s.contains(this) => true
+    case None => true
   }
 
   def genPieceInHand(pieceInHand: List[Piece]) = {
@@ -36,7 +44,7 @@ sealed class Player(newPieceInHand: List[Piece]) {
     PieceInHand(removePieceInHand)(this)
   }
 
-  val reversePlayer: Player
+  val reversePlayer: Player = this
 }
 
 case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
@@ -45,10 +53,6 @@ case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
   }
 }
 
-case class Black(newPieceInHand: List[Piece]) extends Player(newPieceInHand) {
-  val reversePlayer = White
-}
+case class Black(newPieceInHand: List[Piece]) extends Player(newPieceInHand)
 
-case class White(newPieceInHand: List[Piece]) extends Player(newPieceInHand) {
-  val reversePlayer = Black
-}
+case class White(newPieceInHand: List[Piece]) extends Player(newPieceInHand)
