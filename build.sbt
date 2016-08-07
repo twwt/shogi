@@ -12,7 +12,8 @@ resolvers ++= Seq(
 
 
 libraryDependencies ++= Seq(
-  jdbc, cache, ws, specs2 % Test,
+  jdbc, cache, ws,
+//  specs2 % Test,
   "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test",
   "org.scalaz" %% "scalaz-core" % "7.2.4",
   "com.chuusai" %% "shapeless" % "2.3.1"
