@@ -24,5 +24,6 @@ case class DownRight(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
 case class Keima(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
 
 class Piece {
-
+  val ou =
+    List(Up(nearUp), Down(nearDown), Left(nearLeft), Right(nearRight), UpLeft(nearUpLeft), UpRight(nearUpRight), DownLeft(nearDownLeft), DownRight(nearDownRight)) 
 }
