@@ -9,7 +9,7 @@ class PlayerSpec extends FlatSpec with Matchers {
   behavior of "Player"
 
   val freeSpace = FreeSpace(None)
-  val space = WhiteSpace(Some())
+  val space = WhiteSpace(Some(Ou))
   val x = X()
   val boardState = BoardState()
   val game = new Game()
