@@ -9,10 +9,11 @@ class PlayerSpec extends FlatSpec with Matchers {
   behavior of "Player"
 
   val freeSpace = FreeSpace(None)
-  val space = WhiteSpace(Some(Ou))
-  val x = X()
-  val boardState = BoardState()
-  val game = new Game()
+  val ou = WhiteSpace(Some(Ou))
+  val x = X(List(ou, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace))
+  val freeX = X(List(freeSpace, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace, freeSpace))
+  val boardState = BoardState(List(x, freeX, freeX, freeX, freeX, freeX, freeX, freeX))
+  val game = new Game(boardState, White(Nil), Black(Nil))
   it should "movePiece" in {
 
   }
