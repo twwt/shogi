@@ -10,12 +10,7 @@ package models
   * Created by taishi on 7/19/16.
   */
 
-sealed class Player(newPieceInHand: List[Piece]) {
-
-  val pieceInHand: PieceInHand = genPieceInHand(newPieceInHand)
-
-  val reversePlayer: Player = this
-}
+sealed class Player(newPieceInHand: List[Piece])
 
 case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
   def exists(piece: Piece): Boolean = {
