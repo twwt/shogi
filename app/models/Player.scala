@@ -4,7 +4,10 @@ package models
   * Created by taishi on 8/14/16.
   */
 
-abstract class Player(newPieceInHand: List[Piece])
+class Player(newPieceInHand: List[Piece]) {
+  def movePiece(board: BoardState, moveBeforeCoordinate: Coordinate, moveAfterCoordinate: Coordinate) = {
+  }
+}
 
 case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
   def exists(piece: Piece): Boolean = {
