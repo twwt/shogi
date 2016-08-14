@@ -6,9 +6,9 @@ package models
 
 sealed trait Space
 
-case class EnemySpace(piece: Option[Piece]) extends Space
+case class WhiteSpace(piece: Option[Piece]) extends Space
 
-case class MySpace(piece: Option[Piece]) extends Space
+case class BlackSpace(piece: Option[Piece]) extends Space
 
 case class FreeSpace(piece: Option[Piece]) extends Space
 
