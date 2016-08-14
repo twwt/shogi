@@ -39,7 +39,7 @@ sealed abstract class Piece(val move: List[Direction])
 
 case object Ou extends Piece(List(Up(Piece.nearUp), Down(Piece.nearDown), Left(Piece.nearLeft), Right(Piece.nearRight), UpLeft(Piece.nearUpLeft), UpRight(Piece.nearUpRight), DownLeft(Piece.nearDownLeft), DownRight(Piece.nearDownRight)))
 
-abstract class Direction(val moveRange: Set[Coordinate])
+class Direction(val moveRange: Set[Coordinate])
 
 case class Up(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
 

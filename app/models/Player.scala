@@ -5,7 +5,12 @@ package models
   */
 
 class Player(newPieceInHand: List[Piece]) {
-  def movePiece(board: Board, moveBeforeCoordinate: Coordinate, moveAfterCoordinate: Coordinate) = {
+  def movePiece(board: Board, beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate) = {
+    val space: Space = board.findSpace(afterMoveCoordinate)
+  }
+
+  protected def mostMoveRange(piece: Piece, beforeMoveCoordinate: Coordinate):Unit = {
+    val s:List[Set[Coordinate]] = piece.move.map(_.moveRange.map(_ + beforeMoveCoordinate))
   }
 }
 
