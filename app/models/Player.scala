@@ -5,7 +5,7 @@ package models
   */
 
 class Player(newPieceInHand: List[Piece]) {
-  def movePiece(board: BoardState, moveBeforeCoordinate: Coordinate, moveAfterCoordinate: Coordinate) = {
+  def movePiece(board: Board, moveBeforeCoordinate: Coordinate, moveAfterCoordinate: Coordinate) = {
   }
 }
 
