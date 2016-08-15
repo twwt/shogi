@@ -9,8 +9,10 @@ class Player(newPieceInHand: List[Piece]) {
     val space: Space = board.findSpace(afterMoveCoordinate)
   }
 
-  protected def mostMoveRange(piece: Piece, beforeMoveCoordinate: Coordinate):Unit = {
-    val s:List[Set[Coordinate]] = piece.move.map(_.moveRange.map(_ + beforeMoveCoordinate))
+  def mostMoveRange(piece: Piece, beforeMoveCoordinate: Coordinate): Unit = {
+    val s: List[Direction] = piece.move.map(_.moveRange.map(_ + beforeMoveCoordinate)).map(c => Coordinate.toDirection(beforeMoveCoordinate, c, piece))
+    println("mostMoveRange")
+    println(s)
   }
 }
 

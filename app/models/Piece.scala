@@ -39,7 +39,13 @@ sealed abstract class Piece(val move: List[Direction])
 
 case object Ou extends Piece(List(Up(Piece.nearUp), Down(Piece.nearDown), Left(Piece.nearLeft), Right(Piece.nearRight), UpLeft(Piece.nearUpLeft), UpRight(Piece.nearUpRight), DownLeft(Piece.nearDownLeft), DownRight(Piece.nearDownRight)))
 
+case object Kaku extends Piece(List(Up(Piece.canNotMove), Down(Piece.canNotMove), Left(Piece.canNotMove), Right(Piece.canNotMove), UpLeft(Piece.farUpLeft), UpRight(Piece.farUpRight), DownLeft(Piece.farDownLeft), DownRight(Piece.farDownRight)))
+
+case object Keima extends Piece(List(KeimaDirection(Piece.keimaCoordinate)))
+
 class Direction(val moveRange: Set[Coordinate])
+
+case class CanNotMove(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
 
 case class Up(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
 
@@ -57,4 +63,4 @@ case class DownLeft(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
 
 case class DownRight(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
 
-case class Keima(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
+case class KeimaDirection(moveRanges: Set[Coordinate]) extends Direction(moveRanges)
