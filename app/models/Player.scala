@@ -37,9 +37,9 @@ class Player(newPieceInHand: List[Piece]) {
     //    }
   }
 
-  def canMoveRangeIndex(board: Board, sortedCoordinates: List[Coordinate]): Int = {
-    sortedCoordinates.map(println)
-    sortedCoordinates.map(board.findSpace).map(board.findPiece).indexWhere(_.isDefined)
+  def canMoveRangeIndex(board: Board, sortedCoordinates: List[Coordinate]): Map[Int, List[Coordinate]] = {
+    val index = sortedCoordinates.map(board.findSpace).map(board.findPiece).indexWhere(_.isDefined)
+    Map(index -> sortedCoordinates)
   }
 }
 
