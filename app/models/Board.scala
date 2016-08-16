@@ -8,9 +8,11 @@ import scala.util.Try
 
 sealed class Space(val piece: Option[Piece])
 
-case class WhiteSpace(p: Option[Piece]) extends Space(p)
-
-case class BlackSpace(p: Option[Piece]) extends Space(p)
+case class PieceSpace(p: Option[Piece], ownerPlayer: Player) extends Space(p) {
+  def checkOwnerPlayer(player: Player): Boolean = {
+    player == ownerPlayer
+  }
+}
 
 case class FreeSpace(p: Option[Piece]) extends Space(p)
 

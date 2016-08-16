@@ -10,24 +10,30 @@ class PlayerSpec extends FlatSpec with Matchers {
   val white = White(Nil)
   val black = Black(Nil)
   val freeSpace = FreeSpace(None)
-  val ou = WhiteSpace(Some(Ou))
-  val keima = WhiteSpace(Some(Keima))
+  val ou = PieceSpace(Some(Ou), white)
+  val keima = PieceSpace(Some(Keima), white)
   val x = X(Map(-4 -> ou, -3 -> freeSpace, -2 -> freeSpace, -1 -> freeSpace, 0 -> keima, 1 -> freeSpace, 2 -> freeSpace, 3 -> freeSpace, 4 -> keima))
   val freeX = X(Map(-4 -> freeSpace, -3 -> freeSpace, -2 -> freeSpace, -1 -> freeSpace, 0 -> freeSpace, 1 -> freeSpace, 2 -> freeSpace, 3 -> freeSpace, 4 -> freeSpace))
   val boardState = Board(Map(4 -> freeX, 3 -> x, 2 -> x, 1 -> freeX, 0 -> x, -1 -> freeX, -2 -> x, -3 -> freeX, -4 -> freeX))
   val game = new Game(boardState, white, black)
-  it should "mostMoveRange" in {
-    white.mostMoveRange(Coordinate(1, 1))(Kaku)
-  }
-  it should "directionSort" in {
-    val c = Coordinate(1, 1)
-    white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))
-  }
+  //関数をprivateにしたので一度コメントアウトにしておく
+  //  it should "mostMoveRange" in {
+  //    white.mostMoveRange(Coordinate(1, 1))(Kaku)
+  //  }
+  //  it should "directionSort" in {
+  //    val c = Coordinate(1, 1)
+  //    white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))
+  //  }
+  //
+//  it should "canMoveRangeIndex" in {
+//    //駒の座標は-4
+//    val c = Coordinate(1, 1)
+//    val sortedCoordinates: List[List[Coordinate]] = white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))
+//    sortedCoordinates.map(white.canMoveRangeIndex(boardState, _))
+//  }
 
-  it should "canMoveRangeIndex" in {
-    //駒の座標は-4
+  it should "canMoveRange" in {
     val c = Coordinate(1, 1)
-    val sortedCoordinates: List[List[Coordinate]] = white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))
-    sortedCoordinates.map(white.canMoveRangeIndex(boardState, _))
+    println(white.canMoveRange(c, Kaku))
   }
 }

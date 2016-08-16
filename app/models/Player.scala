@@ -9,7 +9,12 @@ class Player(newPieceInHand: List[Piece]) {
     val space: Space = board.findSpace(afterMoveCoordinate)
   }
 
-  def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
+  def canMoveRange(board: Board, beforeMoveCoordinate: Coordinate, piece: Piece): List[Direction] = {
+    this.mostMoveRange(beforeMoveCoordinate)(piece).map(this.distanceSort(_)(beforeMoveCoordinate))
+      .map(c => Coordinate.toDirection(beforeMoveCoordinate, Set(this.canMoveRangeIndex(board, c)), piece))
+  }
+
+  private def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
     for {
       direction <- piece.move
       movedCoordinate = direction.moveRange.map(_ + beforeMoveCoordinate)
@@ -21,25 +26,17 @@ class Player(newPieceInHand: List[Piece]) {
   }
 
 
-  def distanceSort(direction: Direction)(beforeMoveCoordinate: Coordinate): List[Coordinate] = {
+  private def distanceSort(direction: Direction)(beforeMoveCoordinate: Coordinate): List[Coordinate] = {
     direction.moveRange.toList.filter(_ != beforeMoveCoordinate).sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
-    //    direction match {
-    //      case _: CanNotMove => CanNotMove(d)
-    //      case _: Up => Up(d)
-    //      case _: Down => Down(d)
-    //      case _: Left => Left(d)
-    //      case _: Right => Right(d)
-    //      case _: UpLeft => UpLeft(d)
-    //      case _: UpRight => UpRight(d)
-    //      case _: DownLeft => DownLeft(d)
-    //      case _: DownRight => DownRight(d)
-    //      case _: KeimaDirection => KeimaDirection(d)
-    //    }
   }
 
-  def canMoveRangeIndex(board: Board, sortedCoordinates: List[Coordinate]): Map[Int, List[Coordinate]] = {
-    val index = sortedCoordinates.map(board.findSpace).map(board.findPiece).indexWhere(_.isDefined)
-    Map(index -> sortedCoordinates)
+  private def canMoveRangeIndex(board: Board, sortedCoordinates: List[Coordinate]): Coordinate = {
+    val i = sortedCoordinates.map(board.findSpace).map(board.findPiece).indexWhere(_.isDefined)
+    val index: Int = board.findSpace(sortedCoordinates(i)) match {
+      case s: PieceSpace if s.checkOwnerPlayer(this) => i - 1
+      case s: PieceSpace if !s.checkOwnerPlayer(this) => i
+    }
+    sortedCoordinates(index)
   }
 }
 
