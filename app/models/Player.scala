@@ -10,9 +10,6 @@ class Player(newPieceInHand: List[Piece]) {
   }
 
   def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
-    piece.move.map(println)
-//    println(piece.move.map(_.moveRange.map(_ + beforeMoveCoordinate)))
-    //      .filter(c => c.x < 5 && c.y < 5 && -5 < c.x && -5 < c.y)))
     val result = for {
       direction <- piece.move
       movedCoordinate = direction.moveRange.map(_ + beforeMoveCoordinate)
@@ -21,6 +18,7 @@ class Player(newPieceInHand: List[Piece]) {
     } yield {
       toDirectionMoveCoordinate
     }
+    println(result)
     result
   }
 
