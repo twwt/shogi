@@ -1,22 +1,26 @@
 package models
 
+import scala.util.Try
+
 /**
   * Created by taishi on 8/14/16.
   */
 
-sealed trait Space
+sealed class Space(val piece: Option[Piece])
 
-case class WhiteSpace(piece: Option[Piece]) extends Space
+case class WhiteSpace(p: Option[Piece]) extends Space(p)
 
-case class BlackSpace(piece: Option[Piece]) extends Space
+case class BlackSpace(p: Option[Piece]) extends Space(p)
 
-case class FreeSpace(piece: Option[Piece]) extends Space
+case class FreeSpace(p: Option[Piece]) extends Space(p)
 
-case class X(space: List[Space])
+case class X(space: Map[Int, Space])
 
-case class Board(state: List[X]) {
+case class Board(state: Map[Int, X]) {
   def findSpace(coordinate: Coordinate): Space =
     state(coordinate.x).space(coordinate.y)
+
+  def findPiece(space: Space) = space.piece
 }
 
 case class Coordinate(x: Int, y: Int) {
@@ -28,7 +32,7 @@ case class Coordinate(x: Int, y: Int) {
 object Coordinate {
   //afterMoveCoordinatesはただしい値がはいっていないとだめ
   def toDirection(beforeMoveCoordinate: Coordinate, afterMoveCoordinates: Set[Coordinate], piece: Piece): Direction = {
-    afterMoveCoordinates.head - beforeMoveCoordinate match {
+    Try(afterMoveCoordinates.head - beforeMoveCoordinate match {
       case c if c == Coordinate(0, 0) => CanNotMove(Set())
       case p if piece == Keima => KeimaDirection(afterMoveCoordinates)
       case c if c.x == 0 && 1 <= c.y => Up(afterMoveCoordinates)
@@ -39,6 +43,6 @@ object Coordinate {
       case c if 1 <= c.x && 1 <= c.y => UpRight(afterMoveCoordinates)
       case c if c.x <= -1 && c.y <= 0 => DownLeft(afterMoveCoordinates)
       case c if 1 <= c.x && 0 < c.x && c.y <= 0 => DownRight(afterMoveCoordinates)
-    }
+    }).getOrElse(CanNotMove(Set()))
   }
 }

@@ -10,8 +10,20 @@ class Player(newPieceInHand: List[Piece]) {
   }
 
   def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
-    piece.move.map(_.moveRange.map(_ + beforeMoveCoordinate)).map(c => Coordinate.toDirection(beforeMoveCoordinate, c, piece))
+    piece.move.map(println)
+//    println(piece.move.map(_.moveRange.map(_ + beforeMoveCoordinate)))
+    //      .filter(c => c.x < 5 && c.y < 5 && -5 < c.x && -5 < c.y)))
+    val result = for {
+      direction <- piece.move
+      movedCoordinate = direction.moveRange.map(_ + beforeMoveCoordinate)
+        .filter(c => c.x < 5 && c.y < 5 && -5 < c.x && -5 < c.y)
+      toDirectionMoveCoordinate = Coordinate.toDirection(beforeMoveCoordinate, movedCoordinate, piece)
+    } yield {
+      toDirectionMoveCoordinate
+    }
+    result
   }
+
 
   def distanceSort(direction: Direction)(beforeMoveCoordinate: Coordinate): List[Coordinate] = {
     direction.moveRange.toList.sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
@@ -27,6 +39,11 @@ class Player(newPieceInHand: List[Piece]) {
     //      case _: DownRight => DownRight(d)
     //      case _: KeimaDirection => KeimaDirection(d)
     //    }
+  }
+
+  def canMoveRangeIndex(board: Board, sortedCoordinates: List[Coordinate]): Int = {
+    sortedCoordinates.map(println)
+    sortedCoordinates.map(board.findSpace).map(board.findPiece).indexWhere(_.isDefined)
   }
 }
 
