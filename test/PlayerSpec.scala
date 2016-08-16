@@ -19,11 +19,11 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "mostMoveRange" in {
     white.mostMoveRange(Coordinate(1, 1))(Kaku)
   }
-//  it should "directionSort" in {
-//    val c = Coordinate(1, 1)
-//    white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))
-//  }
-//
+  it should "directionSort" in {
+    val c = Coordinate(1, 1)
+    println(white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c)))
+  }
+  //
 //  it should "canMoveRangeIndex" in {
 //    val c = Coordinate(1, 1)
 //    val sortedCoordinates: List[List[Coordinate]] = white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))

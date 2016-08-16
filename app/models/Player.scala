@@ -10,7 +10,7 @@ class Player(newPieceInHand: List[Piece]) {
   }
 
   def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
-    val result = for {
+    for {
       direction <- piece.move
       movedCoordinate = direction.moveRange.map(_ + beforeMoveCoordinate)
         .filter(c => c.x < 5 && c.y < 5 && -5 < c.x && -5 < c.y)
@@ -18,13 +18,11 @@ class Player(newPieceInHand: List[Piece]) {
     } yield {
       toDirectionMoveCoordinate
     }
-    println(result)
-    result
   }
 
 
   def distanceSort(direction: Direction)(beforeMoveCoordinate: Coordinate): List[Coordinate] = {
-    direction.moveRange.toList.sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
+    direction.moveRange.toList.filter(_ != beforeMoveCoordinate).sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
     //    direction match {
     //      case _: CanNotMove => CanNotMove(d)
     //      case _: Up => Up(d)
