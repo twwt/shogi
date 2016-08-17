@@ -25,15 +25,15 @@ class PlayerSpec extends FlatSpec with Matchers {
   //    white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))
   //  }
   //
-//  it should "canMoveRangeIndex" in {
-//    //駒の座標は-4
-//    val c = Coordinate(1, 1)
-//    val sortedCoordinates: List[List[Coordinate]] = white.mostMoveRange(c)(Kaku).map(white.distanceSort(_)(c))
-//    sortedCoordinates.map(white.canMoveRangeIndex(boardState, _))
-//  }
-
-  it should "canMoveRange" in {
+  it should "canMoveRangeIndex" in {
+    //駒の座標は-4
     val c = Coordinate(1, 1)
-    println(white.canMoveRange(c, Kaku))
+    val sortedCoordinates: List[List[Coordinate]] = white.mostMoveRange(c)(Kaku).map(white.distanceSort(c)(_))
+    sortedCoordinates.map(white.canMoveRangeIndex(boardState)(_))
   }
+  //
+  //  it should "canMoveRange" in {
+  //    val c = Coordinate(1, 1)
+  //    println(white.canMoveRange(c)(boardState, Kaku))
+  //  }
 }

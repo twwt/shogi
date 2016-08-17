@@ -1,5 +1,8 @@
 package models
 
+import scalaz._
+import Scalaz._
+
 /**
   * Created by taishi on 8/14/16.
   */
@@ -12,12 +15,14 @@ class Player(newPieceInHand: List[Piece]) {
   def canMoveRange(beforeMoveCoordinate: Coordinate)(board: Board, piece: Piece): List[Direction] = {
     val distanceSort = this.distanceSort(beforeMoveCoordinate)(_)
     val toDirection = Coordinate.toDirection(beforeMoveCoordinate)(piece)(_)
+    val canMoveRangeIndex = this.canMoveRangeIndex(board)(_)
     this.mostMoveRange(beforeMoveCoordinate)(piece)
       .map(distanceSort)
-      .map(c => toDirection(Set(this.canMoveRangeIndex(board, c))))
+      .map(canMoveRangeIndex).flatten
+      .map(c => toDirection(c.toSet))
   }
 
-  private def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
+  def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
     for {
       direction <- piece.move
       movedCoordinate = direction.moveRange.map(_ + beforeMoveCoordinate)
@@ -29,17 +34,23 @@ class Player(newPieceInHand: List[Piece]) {
   }
 
 
-  private def distanceSort(beforeMoveCoordinate: Coordinate)(direction: Direction): List[Coordinate] = {
+  def distanceSort(beforeMoveCoordinate: Coordinate)(direction: Direction): List[Coordinate] = {
     direction.moveRange.toList.filter(_ != beforeMoveCoordinate).sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
   }
 
-  private def canMoveRangeIndex(board: Board, sortedCoordinates: List[Coordinate]): Coordinate = {
-    val i = sortedCoordinates.map(board.findSpace).map(board.findPiece).indexWhere(_.isDefined)
-    val index: Int = board.findSpace(sortedCoordinates(i)) match {
-      case s: PieceSpace if s.checkOwnerPlayer(this) => i - 1
-      case s: PieceSpace if !s.checkOwnerPlayer(this) => i
-    }
-    sortedCoordinates(index)
+  def canMoveRangeIndex(board: Board)(sortedCoordinates: List[Coordinate]): Option[List[Coordinate]] = {
+    (sortedCoordinates
+      .map(board.findSpace)
+      .map(board.findPiece)
+      .indexWhere(_.isDefined) match {
+      case i if sortedCoordinates.length == 0 => None
+      case i if 0 <= i =>
+        board.findSpace(sortedCoordinates(i)) match {
+          case s: PieceSpace if s.checkOwnerPlayer(this) => (i - 1).some
+          case s: PieceSpace if !s.checkOwnerPlayer(this) => i.some
+        }
+      case -1 => sortedCoordinates.length.some
+    }).map(sortedCoordinates.take(_))
   }
 }
 
