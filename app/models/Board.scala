@@ -33,7 +33,7 @@ case class Coordinate(x: Int, y: Int) {
 
 object Coordinate {
   //afterMoveCoordinatesはただしい値がはいっていないとだめ
-  def toDirection(beforeMoveCoordinate: Coordinate, afterMoveCoordinates: Set[Coordinate], piece: Piece): Direction = {
+  def toDirection(beforeMoveCoordinate: Coordinate)(piece: Piece)(afterMoveCoordinates: Set[Coordinate]): Direction = {
     Try(afterMoveCoordinates.head - beforeMoveCoordinate match {
       case c if c == Coordinate(0, 0) => CanNotMove(Set())
       case p if piece == Keima => KeimaDirection(afterMoveCoordinates)
