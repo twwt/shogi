@@ -9,9 +9,9 @@ class PlayerSpec extends FlatSpec with Matchers {
 
   val white = White(Nil)
   val black = Black(Nil)
-  val freeSpace = FreeSpace(None)
-  val ou = PieceSpace(Some(Ou), white)
-  val keima = PieceSpace(Some(Keima), white)
+  val freeSpace = new FreeSpace(None)
+  val ou = new PieceSpace(Some(Ou), white)
+  val keima = new PieceSpace(Some(Keima), white)
   val boardState: Board =
     Board(Map(4 -> X(Map(-4 -> ou, -3 -> freeSpace, -2 -> freeSpace, -1 -> freeSpace, 0 -> freeSpace, 1 -> freeSpace, 2 -> freeSpace, 3 -> freeSpace, 4 -> keima))
       , 3 -> X(Map(-4 -> freeSpace, -3 -> freeSpace, -2 -> freeSpace, -1 -> freeSpace, 0 -> freeSpace, 1 -> freeSpace, 2 -> freeSpace, 3 -> freeSpace, 4 -> keima))
@@ -39,5 +39,11 @@ class PlayerSpec extends FlatSpec with Matchers {
 
   it should "canMoveRange" in {
     println(white.canMoveRange(c)(boardState, Kaku))
+  }
+
+  it should "exchange" in {
+    val exchangeCoordinate: Coordinate = white.canMoveRange(c)(boardState, Kaku).head.moveRange.head
+    val result: Space = boardState.exchange(c, Kaku)
+    result.piece should equal(Some(Kaku))
   }
 }

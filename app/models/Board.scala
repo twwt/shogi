@@ -6,19 +6,22 @@ import scala.util.Try
   * Created by taishi on 8/14/16.
   */
 
-sealed class Space(val piece: Option[Piece])
+sealed case class Space(val piece: Option[Piece])
 
-case class PieceSpace(p: Option[Piece], ownerPlayer: Player) extends Space(p) {
+class PieceSpace(p: Option[Piece], ownerPlayer: Player) extends Space(p) {
   def checkOwnerPlayer(player: Player): Boolean = {
     player == ownerPlayer
   }
 }
 
-case class FreeSpace(p: Option[Piece]) extends Space(p)
+class FreeSpace(p: Option[Piece]) extends Space(p)
 
 case class X(space: Map[Int, Space])
 
 case class Board(state: Map[Int, X]) {
+  def exchange(coordinate: Coordinate, piece: Piece): Space =
+    state(coordinate.x).space(coordinate.y).copy(Some(piece))
+
   def findSpace(coordinate: Coordinate): Space =
     state(coordinate.x).space(coordinate.y)
 
