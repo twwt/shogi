@@ -16,10 +16,17 @@ class Player(newPieceInHand: List[Piece]) {
     val distanceSort = this.distanceSort(beforeMoveCoordinate)(_)
     val toDirection = Coordinate.toDirection(beforeMoveCoordinate)(piece)(_)
     val canMoveRangeIndex = this.canMoveRangeIndex(board)(_)
-    this.mostMoveRange(beforeMoveCoordinate)(piece)
-      .map(distanceSort)
-      .map(canMoveRangeIndex).flatten
-      .map(c => toDirection(c.toSet))
+    piece match {
+      case Keima =>
+        this.mostMoveRange(beforeMoveCoordinate)(piece)
+          .map(distanceSort)
+          .map(c => toDirection(c.toSet))
+      case _ =>
+        this.mostMoveRange(beforeMoveCoordinate)(piece)
+          .map(distanceSort)
+          .map(canMoveRangeIndex).flatten
+          .map(c => toDirection(c.toSet))
+    }
   }
 
   def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
@@ -49,7 +56,7 @@ class Player(newPieceInHand: List[Piece]) {
           case s: PieceSpace if s.checkOwnerPlayer(this) => (i - 1).some
           case s: PieceSpace if !s.checkOwnerPlayer(this) => i.some
         }
-      case -1 => sortedCoordinates.length.some
+      case -1 => (sortedCoordinates.length - 1).some
     }).map(sortedCoordinates.take(_))
   }
 }
