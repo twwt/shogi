@@ -25,30 +25,29 @@ class PlayerSpec extends FlatSpec with Matchers {
   val game = new Game(boardState, white, black)
   val c = Coordinate(1, 1)
 
-  it should "mostMoveRange" in {
-    white.mostMoveRange(Coordinate(1, 1))(Kaku)
-  }
-  it should "directionSort" in {
-    white.mostMoveRange(c)(Kaku).map(white.distanceSort(c)(_))
-  }
-
-  it should "canMoveRangeIndex" in {
-    val sortedCoordinates: List[List[Coordinate]] = white.mostMoveRange(c)(Kaku).map(white.distanceSort(c)(_))
-    sortedCoordinates.map(white.canMoveRangeIndex(boardState)(_))
-  }
-
-  it should "canMoveRange" in {
-    println(white.canMoveRange(c)(boardState, Kaku))
-  }
-
-  it should "exchange" in {
-    val exchangeCoordinate: Coordinate = white.canMoveRange(c)(boardState, Kaku).head.moveRange.head
-    val result: Space = boardState.exchange(c, Kaku)
-    result.piece should equal(Some(Kaku))
-  }
-  it should "exchange" in {
-    val exchangeCoordinate: Coordinate = white.canMoveRange(c)(boardState, Kaku).head.moveRange.head
-    val result: Space = boardState.exchange(c, Kaku)
-    result.piece should equal(Some(Kaku))
+//  it should "mostMoveRange" in {
+//    white.mostMoveRange(Coordinate(1, 1))(Kaku)
+//  }
+//  it should "directionSort" in {
+//    white.mostMoveRange(c)(Kaku).map(white.distanceSort(c)(_))
+//  }
+//
+//  it should "canMoveRangeIndex" in {
+//    val sortedCoordinates: List[List[Coordinate]] = white.mostMoveRange(c)(Kaku).map(white.distanceSort(c)(_))
+//    sortedCoordinates.map(white.canMoveRangeIndex(boardState)(_))
+//  }
+//
+//  it should "canMoveRange" in {
+//    println(white.canMoveRange(c)(boardState, Kaku))
+//  }
+//
+//  it should "exchange" in {
+//    val exchangeCoordinate: Coordinate = white.canMoveRange(c)(boardState, Kaku).head.moveRange.head
+//    val result: Space = boardState.exchange(c, Kaku)
+//    result.piece should equal(Some(Kaku))
+//  }
+  it should "movePiece" in {
+    val result = white.movePiece(boardState, Coordinate(4, -4), Coordinate(3, -4))
+    result should equal(true)
   }
 }
