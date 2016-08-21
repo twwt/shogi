@@ -46,4 +46,9 @@ class PlayerSpec extends FlatSpec with Matchers {
     val result: Space = boardState.exchange(c, Kaku)
     result.piece should equal(Some(Kaku))
   }
+  it should "exchange" in {
+    val exchangeCoordinate: Coordinate = white.canMoveRange(c)(boardState, Kaku).head.moveRange.head
+    val result: Space = boardState.exchange(c, Kaku)
+    result.piece should equal(Some(Kaku))
+  }
 }

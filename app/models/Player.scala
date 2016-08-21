@@ -48,7 +48,7 @@ class Player(newPieceInHand: List[Piece]) {
   def canMoveRangeIndex(board: Board)(sortedCoordinates: List[Coordinate]): Option[List[Coordinate]] = {
     (sortedCoordinates
       .map(board.findSpace)
-      .map(board.findPiece)
+      .map(_.piece)
       .indexWhere(_.isDefined) match {
       case i if sortedCoordinates.length == 0 => None
       case i if 0 <= i =>
@@ -59,6 +59,9 @@ class Player(newPieceInHand: List[Piece]) {
       case -1 => (sortedCoordinates.length - 1).some
     }).map(sortedCoordinates.take(_))
   }
+
+  def coordinatesToPieces(coordinates: List[Coordinate])(board: Board): List[Option[Piece]] =
+    coordinates.map(board.findSpace).map(_.piece)
 }
 
 case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
