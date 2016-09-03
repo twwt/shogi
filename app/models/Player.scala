@@ -3,19 +3,31 @@ package models
 import scalaz._
 import Scalaz._
 
+//import cats._
+//import cats.std.all._
+//import cats.syntax.flatMap._
 /**
   * Created by taishi on 8/14/16.
   */
 
 class Player(newPieceInHand: List[Piece]) {
   def movePiece(board: Board, beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
-    val moveRange = canMoveRange(beforeMoveCoordinate)(board)(_)
-    board.findSpace(beforeMoveCoordinate).piece
-      .map(moveRange).map(_.map(_.moveRange.contains(afterMoveCoordinate)))
-    match {
-      case Some(b) => b.contains(true)
-      case None => false
-    }
+    val moveRangeF = canMoveRange(beforeMoveCoordinate)(board)(_)
+    val moveRange: Option[List[Direction]] =
+      board.findSpace(beforeMoveCoordinate).piece
+        .map(moveRangeF)
+    (for {
+      listDirection <- moveRange
+    } yield {
+      listDirection.contains(afterMoveCoordinate)
+    }).toList.contains(true)
+    //    board.findSpace(beforeMoveCoordinate).piece
+    //      .map(moveRange)
+    //      .map(_.map(_.moveRange.contains(afterMoveCoordinate)))
+    //    match {
+    //      case Some(b) => b.contains(true)
+    //      case None => false
+    //    }
   }
 
   def canMoveRange(beforeMoveCoordinate: Coordinate)(board: Board)(piece: Piece): List[Direction] = {
