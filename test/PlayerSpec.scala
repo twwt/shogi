@@ -56,16 +56,16 @@ class PlayerSpec extends FlatSpec with Matchers {
     result.board(2).x(2) should equal(Space(Some(Kaku), white.some))
   }
   it should "movePiece Fail" in {
-    val result = white.movePiece(boardState, Coordinate(4, -4), Coordinate(3, -2))
+    val result = white.isMovePiece(boardState, Coordinate(4, -4), Coordinate(3, -2))
     result should equal(false)
   }
   it should "movePiece Success" in {
-    val result = white.movePiece(boardState, Coordinate(4, -4), Coordinate(3, -3))
+    val result = white.isMovePiece(boardState, Coordinate(4, -4), Coordinate(3, -3))
     result should equal(true)
   }
   it should "movePiece Fail 2" in {
     //相手ユーザーの駒を動かそうとしてみる
-    val result = white.movePiece(boardState, Coordinate(4, -3), Coordinate(3, -3))
+    val result = white.isMovePiece(boardState, Coordinate(4, -3), Coordinate(3, -3))
     result should equal(false)
   }
 }

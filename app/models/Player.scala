@@ -11,6 +11,18 @@ case class MoveRangeCoordinate(player: Option[Player], moveRange: List[Coordinat
 
 class Player(newPieceInHand: List[Piece]) {
 
+  def isMovePiece(board: Board, beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
+    val moveRangeF = canMoveRange(beforeMoveCoordinate)(board)(_)
+    board.state.board(beforeMoveCoordinate.x).x(beforeMoveCoordinate.y).owner match {
+      case Some(player) if player != this => false
+      case _ => board.findSpace(beforeMoveCoordinate).piece
+        .map(moveRangeF).map(_.map(_.moveRange.contains(afterMoveCoordinate)).contains(true)) match {
+        case Some(b) if b => true
+        case _ => false
+      }
+    }
+  }
+
   def movePiece(board: Board, beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
     val moveRangeF = canMoveRange(beforeMoveCoordinate)(board)(_)
     board.state.board(beforeMoveCoordinate.x).x(beforeMoveCoordinate.y).owner match {
@@ -32,15 +44,6 @@ class Player(newPieceInHand: List[Piece]) {
     this.mostFarMoveRange(beforeMoveCoordinate)(piece)
       .map(distanceSort)
       .map(canMoveRangeIndexF).flatMap(_.map(c => toDirection(c.toSet)))
-    //
-    //    piece match {
-    //      case Keima =>
-    //        sortMoveRange.map(canMoveRangeIndex).flatten
-    //          .map(c => toDirection(c.toSet))
-    //      case _ =>
-    //        sortMoveRange.map(canMoveRangeIndex).flatten
-    //          .map(c => toDirection(c.toSet))
-    //    }
   }
 
   def mostFarMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {

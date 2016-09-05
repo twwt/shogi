@@ -29,15 +29,22 @@ case class X(x: Map[Int, Space])
 @Lenses case class BoardState(board: Map[Int, X])
 
 case class Board(state: BoardState) {
-  def exchange(beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate, piece: Piece, turnPlayer: Player): BoardState = {
-    state.board(beforeMoveCoordinate.x).x(beforeMoveCoordinate.y).copy(piece = None)
-    state.board(afterMoveCoordinate.x).x(afterMoveCoordinate.y).copy(piece = Some(piece))
-    BoardState(state.board.mapValues { i =>
-      X(i.x.map {
-        case (index, space) if index == afterMoveCoordinate.x => (index, Space(Some(piece), turnPlayer.some))
+  def exchange(beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate, piece: Piece, turnPlayer: Player, game: Game): Game = {
+    val beforeMoveSpace = state.board(beforeMoveCoordinate.x).x(beforeMoveCoordinate.y)
+    beforeMoveSpace.copy(piece = None)
+    val afterMoveSpace = state.board(afterMoveCoordinate.x).x(afterMoveCoordinate.y)
+    val newTurnPlayer = afterMoveSpace.owner match {
+      case Some(player) if turnPlayer != player => turnPlayer.addPieceInHand(afterMoveSpace.piece.get)
+      case Some(player) if turnPlayer == player => player
+      case _ => turnPlayer
+    }
+    val boardState = Board(BoardState(state.board.flatMap { y =>
+      y._2.x.map {
+        case (index, space) if y._1 == afterMoveCoordinate.y && index == afterMoveCoordinate.x => (index, Space(Some(piece), turnPlayer.some))
         case (index, space) => (index, space)
-      })
-    })
+      }.flatMap(x => Map(y._1 -> y._2))
+    }))
+    game.copy(boardState = boardState, turnPlayer = newTurnPlayer)
   }
 
   def findSpace(coordinate: Coordinate): Space = state.board(coordinate.x).x(coordinate.y)
