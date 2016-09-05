@@ -47,13 +47,12 @@ class PlayerSpec extends FlatSpec with Matchers {
   }
 
   it should "exchange freeSpace" in {
-    val result: BoardState = boardState.exchange(Coordinate(1, 1), Coordinate(2, 2), Kaku, white)
-    result.board(1).x(1) should equal(Space(None, None))
+    val result: Game = boardState.exchange(Coordinate(1, 1), Coordinate(2, 2), Kaku, white, game)
+    result.boardState.state.board(1).x(1) should equal(Space(None, None))
   }
   it should "exchange afterMove" in {
-    val result: BoardState = boardState.exchange(Coordinate(1, 1), Coordinate(2, 2), Kaku, white)
-    println(result.board(2))
-    result.board(2).x(2) should equal(Space(Some(Kaku), white.some))
+    val result: Game = boardState.exchange(Coordinate(1, 1), Coordinate(2, 2), Kaku, white, game)
+    result.boardState.state.board(2).x(2) should equal(Space(Some(Kaku), white.some))
   }
   it should "movePiece Fail" in {
     val result = white.isMovePiece(boardState, Coordinate(4, -4), Coordinate(3, -2))

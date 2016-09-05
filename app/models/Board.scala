@@ -38,13 +38,13 @@ case class Board(state: BoardState) {
       case Some(player) if turnPlayer == player => player
       case _ => turnPlayer
     }
-    val boardState = Board(BoardState(state.board.flatMap { y =>
-      y._2.x.map {
+    val board = Board(BoardState(state.board.flatMap { y =>
+      Map(y._1 -> X(y._2.x.map {
         case (index, space) if y._1 == afterMoveCoordinate.y && index == afterMoveCoordinate.x => (index, Space(Some(piece), turnPlayer.some))
         case (index, space) => (index, space)
-      }.flatMap(x => Map(y._1 -> y._2))
+      }))
     }))
-    game.copy(boardState = boardState, turnPlayer = newTurnPlayer)
+    game.copy(boardState = board, turnPlayer = newTurnPlayer)
   }
 
   def findSpace(coordinate: Coordinate): Space = state.board(coordinate.x).x(coordinate.y)
