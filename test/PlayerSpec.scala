@@ -66,6 +66,6 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "movePiece Fail 2" in {
     //相手ユーザーの駒を動かそうとしてみる
     val result = white.movePiece(boardState, Coordinate(4, -3), Coordinate(3, -3))
-    result should equal(true)
+    result should equal(false)
   }
 }
