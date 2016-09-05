@@ -3,81 +3,79 @@ package models
 import scalaz._
 import Scalaz._
 
-//import cats._
-//import cats.std.all._
-//import cats.syntax.flatMap._
 /**
   * Created by taishi on 8/14/16.
   */
 
+case class MoveRangeCoordinate(player: Option[Player], moveRange: List[Coordinate])
+
 class Player(newPieceInHand: List[Piece]) {
+
   def movePiece(board: Board, beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
     val moveRangeF = canMoveRange(beforeMoveCoordinate)(board)(_)
-    val moveRange: Option[List[Direction]] =
-      board.findSpace(beforeMoveCoordinate).piece
-        .map(moveRangeF)
-    (for {
-      listDirection <- moveRange
-    } yield {
-      listDirection.contains(afterMoveCoordinate)
-    }).toList.contains(true)
-    //    board.findSpace(beforeMoveCoordinate).piece
-    //      .map(moveRange)
-    //      .map(_.map(_.moveRange.contains(afterMoveCoordinate)))
-    //    match {
-    //      case Some(b) => b.contains(true)
-    //      case None => false
-    //    }
+    board.state.board(afterMoveCoordinate.x).x(afterMoveCoordinate.y)
+    board.findSpace(beforeMoveCoordinate).piece
+      .map(moveRangeF).map(_.map(_.moveRange.contains(afterMoveCoordinate)).contains(true)) match {
+      case Some(b) if b => true
+      case _ => false
+    }
   }
+
+  def addPieceInHand(piece: Piece): Player = new Player(piece :: newPieceInHand)
 
   def canMoveRange(beforeMoveCoordinate: Coordinate)(board: Board)(piece: Piece): List[Direction] = {
     val distanceSort = this.distanceSort(beforeMoveCoordinate)(_)
     val toDirection = Coordinate.toDirection(beforeMoveCoordinate)(piece)(_)
-    val canMoveRangeIndex = this.canMoveRangeIndex(board)(_)
-    piece match {
-      case Keima =>
-        this.mostMoveRange(beforeMoveCoordinate)(piece)
-          .map(distanceSort)
-          .map(c => toDirection(c.toSet))
-      case _ =>
-        this.mostMoveRange(beforeMoveCoordinate)(piece)
-          .map(distanceSort)
-          .map(canMoveRangeIndex).flatten
-          .map(c => toDirection(c.toSet))
-    }
+    val canMoveRangeIndexF = this.moveRangeIndex(board)(_)
+    this.mostFarMoveRange(beforeMoveCoordinate)(piece)
+      .map(distanceSort)
+      .map(canMoveRangeIndexF).flatMap(_.map(c => toDirection(c.toSet)))
+    //
+    //    piece match {
+    //      case Keima =>
+    //        sortMoveRange.map(canMoveRangeIndex).flatten
+    //          .map(c => toDirection(c.toSet))
+    //      case _ =>
+    //        sortMoveRange.map(canMoveRangeIndex).flatten
+    //          .map(c => toDirection(c.toSet))
+    //    }
   }
 
-  def mostMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
+  def mostFarMoveRange(beforeMoveCoordinate: Coordinate)(piece: Piece): List[Direction] = {
     for {
       direction <- piece.move
       movedCoordinate = direction.moveRange.map(_ + beforeMoveCoordinate)
         .filter(c => c.x < 5 && c.y < 5 && -5 < c.x && -5 < c.y)
-      toDirectionMoveCoordinate = Coordinate.toDirection(beforeMoveCoordinate)(piece)(movedCoordinate)
+        .filterNot(c => c.x == beforeMoveCoordinate.x && c.y == beforeMoveCoordinate.y)
     } yield {
-      toDirectionMoveCoordinate
+      Coordinate.toDirection(beforeMoveCoordinate)(piece)(movedCoordinate)
     }
   }
 
 
-  def distanceSort(beforeMoveCoordinate: Coordinate)(direction: Direction): List[Coordinate] = {
-    direction.moveRange.toList.filter(_ != beforeMoveCoordinate).sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
-  }
+  def distanceSort(beforeMoveCoordinate: Coordinate)(direction: Direction): List[Coordinate] =
+    direction.moveRange.toList.sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
 
-  def canMoveRangeIndex(board: Board)(sortedCoordinates: List[Coordinate]): Option[List[Coordinate]] = {
-    val pf: PartialFunction[Int, Option[Int]] = {
-      case i if sortedCoordinates.length == 0 => None
+  def moveRangeIndex(board: Board)(sortedCoordinates: List[Coordinate]): Option[List[Coordinate]] = {
+    val pf: PartialFunction[Int, Int] = {
+      case i if sortedCoordinates.length == 0 => 0
       case i if 0 <= i =>
-        val pieceSpace: PieceSpace = new PieceSpace(board.findSpace(sortedCoordinates(i)).piece, this)
-        if (pieceSpace.checkOwnerPlayer(this)) (i - 1).some else i.some
-      case -1 => (sortedCoordinates.length - 1).some
+        val piece: Option[Piece] = board.findSpace(sortedCoordinates(i)).piece
+        if (new PieceSpace(piece, this.some).checkOwnerPlayer(this)) i - 1 else i
+      case -1 => sortedCoordinates.length + 1
     }
-    (pf(coordinatesToPieces(sortedCoordinates)(board)
-      .indexWhere(_.isDefined))).map(i => sortedCoordinates.take(i + 1))
+    val moveRangeIndex = pf(coordinatesToPieces(sortedCoordinates)(board)
+      .indexWhere(_.isDefined))
+    sortedCoordinates.take(moveRangeIndex) match {
+      case l if l.isEmpty => None
+      case l if !l.isEmpty => l.some
+    }
   }
 
 
   def coordinatesToPieces(coordinates: List[Coordinate])(board: Board): List[Option[Piece]] =
     coordinates.map(board.findSpace).map(_.piece)
+
 }
 
 case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
@@ -86,6 +84,10 @@ case class PieceInHand(pieceInHand: List[Piece])(player: Player) {
   }
 }
 
-case class Black(pieceInHand: List[Piece]) extends Player(pieceInHand)
+case class Black(pieceInHand: List[Piece]) extends Player(pieceInHand) {
+  val reversePlayer = White
+}
 
-case class White(pieceInHand: List[Piece]) extends Player(pieceInHand)
+case class White(pieceInHand: List[Piece]) extends Player(pieceInHand) {
+  val reversePlayer = Black
+}

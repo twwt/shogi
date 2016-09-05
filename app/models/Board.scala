@@ -1,29 +1,46 @@
 package models
 
 import scala.util.Try
+import scalaz._
+import Scalaz._
+import monocle.macros.{GenLens, Lenses}
+import monocle.function.At.at
+import monocle.std.map._
+import monocle.std.string._
+import monocle.function.all._
+import monocle.std.list._
+import monocle.std.map._
+import monocle.Traversal
 
 /**
   * Created by taishi on 8/14/16.
   */
 
-sealed case class Space(val piece: Option[Piece])
+sealed case class Space(val piece: Option[Piece], owner: Option[Player])
 
-class PieceSpace(p: Option[Piece], ownerPlayer: Player) extends Space(p) {
-  def checkOwnerPlayer(player: Player): Boolean = {
-    player == ownerPlayer
-  }
+class PieceSpace(p: Option[Piece], ownerPlayer: Option[Player]) extends Space(p, ownerPlayer) {
+  def checkOwnerPlayer(player: Player): Boolean = player == ownerPlayer
 }
 
-class FreeSpace(p: Option[Piece]) extends Space(p)
+class FreeSpace(p: Option[Piece], ownerPlayer: Option[Player] = None) extends Space(p, ownerPlayer)
 
-case class X(space: Map[Int, Space])
+case class X(x: Map[Int, Space])
 
-case class Board(state: Map[Int, X]) {
-  def exchange(coordinate: Coordinate, piece: Piece): Space =
-    state(coordinate.x).space(coordinate.y).copy(Some(piece))
+@Lenses case class BoardState(board: Map[Int, X])
 
-  def findSpace(coordinate: Coordinate): Space =
-    state(coordinate.x).space(coordinate.y)
+case class Board(state: BoardState) {
+  def exchange(beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate, piece: Piece, turnPlayer: Player): BoardState = {
+    state.board(beforeMoveCoordinate.x).x(beforeMoveCoordinate.y).copy(piece = None)
+    state.board(afterMoveCoordinate.x).x(afterMoveCoordinate.y).copy(piece = Some(piece))
+    BoardState(state.board.mapValues { i =>
+      X(i.x.map {
+        case (index, space) if index == afterMoveCoordinate.x => (index, Space(Some(piece), turnPlayer.some))
+        case (index, space) => (index, space)
+      })
+    })
+  }
+
+  def findSpace(coordinate: Coordinate): Space = state.board(coordinate.x).x(coordinate.y)
 
   def findPiece(space: Space) = space.piece
 }
@@ -35,7 +52,6 @@ case class Coordinate(x: Int, y: Int) {
 }
 
 object Coordinate {
-  //afterMoveCoordinatesはただしい値がはいっていないとだめ
   def toDirection(beforeMoveCoordinate: Coordinate)(piece: Piece)(afterMoveCoordinates: Set[Coordinate]): Direction = {
     Try(afterMoveCoordinates.head - beforeMoveCoordinate match {
       case c if c == Coordinate(0, 0) => CanNotMove(Set())
