@@ -31,7 +31,6 @@ case class X(x: Map[Int, Space])
 case class Board(state: BoardState) {
   def exchange(beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate, piece: Piece, turnPlayer: Player, game: Game): Game = {
     val beforeMoveSpace = state.board(beforeMoveCoordinate.x).x(beforeMoveCoordinate.y)
-    beforeMoveSpace.copy(piece = None)
     val afterMoveSpace = state.board(afterMoveCoordinate.x).x(afterMoveCoordinate.y)
     val newTurnPlayer = afterMoveSpace.owner match {
       case Some(player) if turnPlayer != player => turnPlayer.addPieceInHand(afterMoveSpace.piece.get)
@@ -41,6 +40,7 @@ case class Board(state: BoardState) {
     val board = Board(BoardState(state.board.flatMap { y =>
       Map(y._1 -> X(y._2.x.map {
         case (index, space) if y._1 == afterMoveCoordinate.y && index == afterMoveCoordinate.x => (index, Space(Some(piece), turnPlayer.some))
+        case (index, space) if y._1 == beforeMoveCoordinate.y && index == beforeMoveCoordinate.x => (index, Space(None, None))
         case (index, space) => (index, space)
       }))
     }))

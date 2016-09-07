@@ -9,7 +9,7 @@ import Scalaz._
 
 case class MoveRangeCoordinate(player: Option[Player], moveRange: List[Coordinate])
 
-class Player(newPieceInHand: List[Piece]) {
+class Player(val newPieceInHand: List[Piece]) {
 
   def isMovePiece(board: Board, beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
     val moveRangeF = canMoveRange(beforeMoveCoordinate)(board)(_)
