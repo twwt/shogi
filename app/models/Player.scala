@@ -23,18 +23,6 @@ class Player(newPieceInHand: List[Piece]) {
     }
   }
 
-  def movePiece(board: Board, beforeMoveCoordinate: Coordinate, afterMoveCoordinate: Coordinate): Boolean = {
-    val moveRangeF = canMoveRange(beforeMoveCoordinate)(board)(_)
-    board.state.board(beforeMoveCoordinate.x).x(beforeMoveCoordinate.y).owner match {
-      case Some(player) if player != this => false
-      case _ => board.findSpace(beforeMoveCoordinate).piece
-        .map(moveRangeF).map(_.map(_.moveRange.contains(afterMoveCoordinate)).contains(true)) match {
-        case Some(b) if b => true
-        case _ => false
-      }
-    }
-  }
-
   def addPieceInHand(piece: Piece): Player = new Player(piece :: newPieceInHand)
 
   def canMoveRange(beforeMoveCoordinate: Coordinate)(board: Board)(piece: Piece): List[Direction] = {
