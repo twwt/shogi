@@ -44,7 +44,7 @@ case class Board(state: BoardState) {
         case (index, space) => (index, space)
       }))
     }))
-    game.copy(boardState = board, turnPlayer = newTurnPlayer)
+    game.copy(boardState = board, notTrunPlayer = newTurnPlayer)
   }
 
   def findSpace(coordinate: Coordinate): Space = state.board(coordinate.x).x(coordinate.y)

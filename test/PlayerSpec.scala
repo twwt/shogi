@@ -56,7 +56,7 @@ class PlayerSpec extends FlatSpec with Matchers {
   }
   it should "exchange pieceInHand" in {
     val result: Game = boardState.exchange(Coordinate(1, 1), Coordinate(4, 4), Kaku, black, game)
-    result.turnPlayer.newPieceInHand should equal(List(Keima))
+    result.notTrunPlayer.newPieceInHand should equal(List(Keima))
   }
   it should "isMovePiece Fail" in {
     val result = white.isMovePiece(boardState, Coordinate(4, -4), Coordinate(3, -2))
