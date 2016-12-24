@@ -49,13 +49,13 @@ class Player(val newPieceInHand: List[Piece]) {
   def distanceSort(beforeMoveCoordinate: Coordinate)(direction: Direction): List[Coordinate] =
     direction.moveRange.toList.sortBy(c => c.x.abs + c.y.abs + beforeMoveCoordinate.x.abs + beforeMoveCoordinate.y.abs)
 
-  def moveRangeIndex(board: Board)(sortedCoordinates: List[Coordinate]): Option[List[Coordinate]] = {
+  def moveRangeIndex(board: Board)(sortedCoordinates: List[Coordinate]): Option[List[Coordinate]] = {// todo  Option[List[Coordinate]] => List[Coordinate]じゃない？
     val pf: PartialFunction[Int, Int] = {
       case i if sortedCoordinates.length == 0 => 0
       case i if 0 <= i =>
         val piece: Option[Piece] = board.findSpace(sortedCoordinates(i)).piece
         if (new PieceSpace(piece, this.some).checkOwnerPlayer(this)) i - 1 else i
-      case -1 => sortedCoordinates.length + 1
+      case -1 => sortedCoordinates.length + 1// todo -2で落ちる
     }
     val moveRangeIndex = pf(coordinatesToPieces(sortedCoordinates)(board)
       .indexWhere(_.isDefined))
